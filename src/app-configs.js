@@ -11,7 +11,7 @@ export default {
     },
   },
   notificationApiSettings: {
-    url: "http://localhost:8004/api",
+    url: "https://l1-proxy.lumigame.com/notification/api",
     auth: {
       url: "https://auth.lumigame.com",
       id: "game-services",

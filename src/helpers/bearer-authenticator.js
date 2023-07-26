@@ -34,7 +34,7 @@ export default class BearerAuthenticator {
 
   async updateToken() {
     try {
-      const token = await thisgetBearerToken();
+      const token = await this.getBearerToken();
 
       this.token = token.token;
       this.expired = token.expired;

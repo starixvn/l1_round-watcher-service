@@ -25,12 +25,13 @@ fastify.register(cors, {
 
 const start = async () => {
   try {
-    const { database, sentry, enabledLogs } = appConfigs;
+    const { database, sentry, enabledLogs, notificationApiSettings } =
+      appConfigs;
     registerRoute(fastify);
     middlewares.database.configureDatabase(mongoose, database);
     enabledLogs && logger.start(sentry);
-    authenticationHelper.init(appConfigs.notificationApiSettings);
-    const watcher = addWatcher("xocxoc");
+    authenticationHelper.init(notificationApiSettings.auth);
+    addWatcher("xocxoc");
 
     await fastify.listen({ port: 5000, host: "0.0.0.0" });
 
