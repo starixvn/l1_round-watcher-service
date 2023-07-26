@@ -15,11 +15,18 @@ export const registerBroadcastNewRoundEvent = (game) => {
   const changeStream = model.watch();
 
   changeStream.on("change", (change) => {
-    if (change.operationType === "insert") {
-      const { id, result, settlementResult, time } = change.fullDocument;
-      authenticationHelper.post(`${notificationApiSettings.url}/miniCounter`, {
-        [game]: { id, result, settlementResult, time },
-      });
+    try {
+      if (change.operationType === "insert") {
+        const { id, result, settlementResult, time } = change.fullDocument;
+        authenticationHelper.post(
+          `${notificationApiSettings.url}/miniCounter`,
+          {
+            [game]: { id, result, settlementResult, time },
+          }
+        );
+      }
+    } catch (ex) {
+      Sentry;
     }
   });
 

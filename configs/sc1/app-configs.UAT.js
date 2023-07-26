@@ -15,9 +15,9 @@ export default {
       url: "http://l1_auth_api_uat:5000",
       id: "game-services",
       secret: "gameservices@20luminet&",
+      useAuthenticate: true,
     },
     requestTimeout: 10000,
-    useAuthenticate: true,
   },
   sentry: {
     sentryUrl: "http://52368c4019044019885440599c180bda@10.2.190.51:9009/2",

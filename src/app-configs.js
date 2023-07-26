@@ -11,14 +11,14 @@ export default {
     },
   },
   notificationApiSettings: {
-    url: "https://l1-proxy.lumigame.com/notification/api",
+    url: "http://localhost:8004/api",
     auth: {
       url: "https://auth.lumigame.com",
       id: "game-services",
       secret: "gameservices@20luminet&",
+      useAuthenticate: true,
     },
     requestTimeout: 10000,
-    useAuthenticate: false,
   },
   sentry: {
     sentryUrl: "https://13f39b8359404ed5aec23655e64ccf78@sentry.lumigame.com/2",
