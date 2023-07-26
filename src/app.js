@@ -30,7 +30,6 @@ const start = async () => {
     middlewares.database.configureDatabase(mongoose, database);
     enabledLogs && logger.start(sentry);
     authenticationHelper.init(appConfigs.notificationApiSettings);
-
     const watcher = addWatcher("xocxoc");
 
     await fastify.listen({ port: 5000, host: "0.0.0.0" });
