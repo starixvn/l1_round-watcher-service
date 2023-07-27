@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { RoundCollectionMapper } from "./constants";
 import authenticationHelper from "../helpers/authentication-helper";
 import appConfigs from "../app-configs";
+import { logger } from "sc-common";
 
 const Schema = new mongoose.Schema({
   id: { type: Number, required: true },
@@ -15,23 +16,21 @@ export const registerBroadcastNewRoundEvent = (game) => {
   const changeStream = model.watch();
 
   changeStream.on("change", (change) => {
-    try {
-      if (change.operationType === "insert") {
-        const { id, result, settlementResult, time } = change.fullDocument;
-        authenticationHelper.post(
-          `${notificationApiSettings.url}/miniCounter`,
-          {
-            [game]: { id, result, settlementResult, time },
-          }
-        );
-      }
-    } catch (ex) {
-      Sentry;
+    if (change.operationType === "insert") {
+      const { id, result, settlementResult, time } = change.fullDocument;
+      authenticationHelper
+        .post(`${notificationApiSettings.url}/miniCounter`, {
+          [game]: { id, result, settlementResult, time },
+        })
+        .catch((ex) => {
+          logger.logError(ex);
+        });
     }
   });
 
   changeStream.on("error", (err) => {
     console.error("Change Stream error:", err);
+    logger.logError(err);
   });
 
   return changeStream;
