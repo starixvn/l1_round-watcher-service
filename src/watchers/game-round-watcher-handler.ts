@@ -1,28 +1,23 @@
-import mongoose from "mongoose";
-import { OperationType, RoundCollectionMapper } from "./constants";
+import { OperationType } from "../constants";
 import authenticationHelper from "../helpers/authentication-helper";
 import appConfigs from "../app-configs";
 import { logger } from "sc-common";
+import GameRound from "../models/game-rounds";
+import { ChangeStreamInsertDocument } from "mongodb";
 
-const Schema = new mongoose.Schema({
-  id: { type: Number, required: true },
-  result: { type: Object },
-  settlementResult: { type: Object },
-});
-
-export const registerBroadcastNewRoundEvent = (game) => {
+export const registerBroadcastNewRoundEvent = (game: string) => {
   const { notificationApiSettings } = appConfigs;
-  const model = mongoose.model(RoundCollectionMapper(game), Schema);
+  const model = GameRound(game);
   const changeStream = model.watch();
 
-  changeStream.on("change", (change) => {
+  changeStream.on("change", (change: ChangeStreamInsertDocument) => {
     if (change.operationType === OperationType.insert) {
       const { id, result, settlementResult, time } = change.fullDocument;
       authenticationHelper
         .post(`${notificationApiSettings.url}/miniCounter`, {
           [game]: { id, result, settlementResult, time },
         })
-        .catch((ex) => {
+        .catch((ex: Error) => {
           logger.logError(ex);
         });
     }

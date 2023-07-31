@@ -1,7 +1,7 @@
 {
   "name": "rtp-checker-service",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/app.ts",
   "repository": "https://git3.nexdev.net/l1/rtp-checker-service.git",
   "author": "Drake Doi",
   "license": "MIT",
@@ -9,7 +9,7 @@
   "scripts": {
     "test": "jest --testPathPattern=tests/",
     "test-coverage": "jest --collect-coverage",
-    "start": "nodemon --es-module-specifier-resolution=node --watch ./src ./src/app.js",
+    "start": "ts-node --es-module-specifier-resolution=node --watch ./src ./src/app.ts",
     "prod": "node --es-module-specifier-resolution=node ./src/app.js",
     "reg": "npm set registry http://npm.lumigame.com",
     "dev": "ts-node --experimental-specifier-resolution=node ./src/app.ts"
@@ -23,6 +23,7 @@
     "@fastify/cors": "^8.3.0",
     "axios": "^1.4.0",
     "fastify": "^4.19.2",
+    "mongodb": "^5.7.0",
     "mongoose": "^5.9.25",
     "openid-client": "^5.4.3",
     "sc-common": "^1.8.1"

@@ -1,6 +1,6 @@
-const GameRoundSpecialMapper = {
+const GameRoundSpecialMapper: { [key: string]: string } = {
   oeturbo: "chanleturbo_phiens",
-  dragenter: "minidragontiger_phiens",
+  dragontiger: "minidragontiger_phiens",
 };
 
 const GameRoundOldSuffixMapper = [
@@ -36,11 +36,11 @@ const GameRoundOldSuffixMapper = [
   "texasholdempoker",
 ];
 
-const OperationType = {
+const OperationType: { [key: string]: string } = {
   insert: "insert",
 };
 
-const RoundCollectionMapper = (gameName) => {
+const RoundCollectionMapper = (gameName: string) => {
   const specialMap = GameRoundSpecialMapper[gameName];
   const oldSuffix = GameRoundOldSuffixMapper.includes(gameName)
     ? `${gameName}_phiens`

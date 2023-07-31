@@ -1,14 +1,15 @@
 import { registerBroadcastNewRoundEvent } from "./game-round-watcher-handler";
+import { ChangeStream } from "mongodb";
 
-const watcher = {};
+const watcher: { [key: string]: ChangeStream } = {};
 
-const addWatcher = (game) => {
+const addWatcher = (game: string) => {
   const changeStream = registerBroadcastNewRoundEvent(game);
 
   watcher[game] = changeStream;
 };
 
-const removeWatcher = (game) => {
+const removeWatcher = (game: string) => {
   watcher[game].close();
 
   delete watcher[game];
