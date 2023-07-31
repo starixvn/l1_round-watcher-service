@@ -36,6 +36,10 @@ const GameRoundOldSuffixMapper = [
   "texasholdempoker",
 ];
 
+const OperationType = {
+  insert: "insert",
+};
+
 const RoundCollectionMapper = (gameName) => {
   const specialMap = GameRoundSpecialMapper[gameName];
   const oldSuffix = GameRoundOldSuffixMapper.includes(gameName)
@@ -45,4 +49,4 @@ const RoundCollectionMapper = (gameName) => {
   return specialMap ?? oldSuffix ?? `${gameName}_rounds`;
 };
 
-export { RoundCollectionMapper };
+export { RoundCollectionMapper, OperationType };

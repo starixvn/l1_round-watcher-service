@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { RoundCollectionMapper } from "./constants";
+import { OperationType, RoundCollectionMapper } from "./constants";
 import authenticationHelper from "../helpers/authentication-helper";
 import appConfigs from "../app-configs";
 import { logger } from "sc-common";
@@ -16,7 +16,7 @@ export const registerBroadcastNewRoundEvent = (game) => {
   const changeStream = model.watch();
 
   changeStream.on("change", (change) => {
-    if (change.operationType === "insert") {
+    if (change.operationType === OperationType.insert) {
       const { id, result, settlementResult, time } = change.fullDocument;
       authenticationHelper
         .post(`${notificationApiSettings.url}/miniCounter`, {
