@@ -1,7 +1,14 @@
 import mongoose from "mongoose";
 import { RoundCollectionMapper } from "../constants";
 
-const Schema = new mongoose.Schema({
+interface GameRound {
+  id: string;
+  result: string;
+  settlementResult: string;
+  time: string;
+}
+
+const Schema = new mongoose.Schema<GameRound>({
   id: { type: Number, required: true },
   result: { type: Object },
   settlementResult: { type: Object },
@@ -9,4 +16,4 @@ const Schema = new mongoose.Schema({
 });
 
 export default (gameConfigName: string) =>
-  mongoose.model(RoundCollectionMapper(gameConfigName), Schema);
+  mongoose.model<GameRound>(RoundCollectionMapper(gameConfigName), Schema);
