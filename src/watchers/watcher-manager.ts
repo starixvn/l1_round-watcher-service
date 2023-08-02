@@ -1,14 +1,14 @@
 import { registerRoundEvent } from "./game-round-watcher-handler";
 import { ChangeStream } from "mongodb";
-import { registerBroadcastNewRoundEvent } from "./game-round-watcher-handler";
 
 const watcher: { [key: string]: ChangeStream } = {};
 
 const addWatcher = (game: string) => {
   if (!watcher[game]) {
-  const changeStream = registerRoundEvent(game);
+    const changeStream = registerRoundEvent(game);
 
-  watcher[game] = changeStream;
+    watcher[game] = changeStream;
+  }
 };
 
 const removeWatcher = (game: string) => {
@@ -23,4 +23,3 @@ const removeAll = () => {
 };
 
 export { addWatcher, removeAll, removeWatcher };
-
