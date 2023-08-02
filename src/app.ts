@@ -5,7 +5,7 @@ import { middlewares, logger } from "sc-common";
 import appConfigs from "./app-configs";
 import { registerRoute } from "./routes";
 import authenticationHelper from "./helpers/authentication-helper";
-import { addWatcher } from "./watchers/watcher-manager";
+import { initWatcher } from "./handlers/round-timer-handler";
 
 const fastify = Fastify({
   logger: appConfigs.enabledLogs,
@@ -31,7 +31,8 @@ const start = async () => {
     middlewares.database.configureDatabase(mongoose, database);
     enabledLogs && logger.start(sentry);
     authenticationHelper.init(notificationApiSettings.auth);
-    addWatcher("minisedie");
+
+    await initWatcher();
 
     await fastify.listen({ port: 5000, host: "0.0.0.0" });
 

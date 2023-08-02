@@ -1,0 +1,66 @@
+import { gameConfigs, lobbies } from "../models";
+import { addWatcher, removeAll } from "../watchers/watcher-manager";
+import { gameRounds } from "../models";
+
+const LastResult: { [key: string]: Object } = {};
+
+const getLastResult = async (gameConfigNames: Array<string>) => {
+  const jobs = gameConfigNames.map(async (gameName) => {
+    const model = gameRounds(gameName);
+
+    const latestRound = await model
+      .findOne({}, { _id: false, exchangeRateId: false })
+      .sort({ id: -1 })
+      .lean()
+      .exec();
+
+    return { [gameName]: { ...latestRound } };
+  });
+
+  const data = await Promise.all(jobs);
+
+  return data.reduce((acc, obj) => {
+    const key = Object.keys(obj)[0];
+    acc[key] = obj[key];
+
+    return acc;
+  }, {});
+};
+
+const getSupportedGames = async () => {
+  const lobbySettings = await lobbies
+    .find({}, { roundTimerGame: true, _id: false })
+    .lean()
+    .exec();
+
+  const gameIds = lobbySettings.flatMap(
+    (setting) => setting.roundTimerGame.gameIds
+  );
+
+  const gameSettings = await gameConfigs
+    .find({ gameId: { $in: gameIds } }, { name: true })
+    .lean()
+    .exec();
+
+  return gameSettings.flatMap((setting) => setting.name);
+};
+
+const clearWatcher = () => {
+  removeAll();
+  Object.keys(LastResult).map((key) => delete LastResult[key]);
+};
+
+const initWatcher = async () => {
+  const supportedGames = await getSupportedGames();
+  const latestResult = await getLastResult(supportedGames);
+
+  clearWatcher();
+  Object.assign(LastResult, latestResult);
+  supportedGames.every((game) => addWatcher(game));
+};
+
+const updateLastResult = (roundResult: { [key: string]: Object }) => {
+  Object.assign(LastResult, roundResult);
+};
+
+export { initWatcher, updateLastResult };
