@@ -9,7 +9,7 @@ import { updateLastResult } from "../handlers/round-timer-handler";
 export const registerRoundEvent = (game: string) => {
   const { notificationApiSettings } = appConfigs;
   const model = GameRound(game);
-  const changeStream = model.collection.watch();
+  const changeStream = model.watch();
 
   changeStream.on(ChangeStream.CHANGE, (change: ChangeStreamInsertDocument) => {
     if (change.operationType === OperationType.insert) {
