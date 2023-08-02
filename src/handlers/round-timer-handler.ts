@@ -63,4 +63,6 @@ const updateLastResult = (roundResult: { [key: string]: Object }) => {
   Object.assign(LastResult, roundResult);
 };
 
-export { initWatcher, updateLastResult };
+const getLatestResult = () => ({ ...LastResult });
+
+export { initWatcher, updateLastResult, getLatestResult };

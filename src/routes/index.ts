@@ -2,12 +2,14 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import appConfigs from "../app-configs";
 import authenticationHelper from "../helpers/authentication-helper";
 import Lobby from "../types/lobby";
+import { getLatestResult } from "../handlers/round-timer-handler";
 
 const { notificationApiSettings } = appConfigs;
 export const registerRoute = (fastify: FastifyInstance) => {
   fastify.get("/", async (request: FastifyRequest, reply: FastifyReply) => {
     reply.code(200).send("Hello, I'm Round Watcher Service !!!");
   });
+
   fastify.post(
     "/api/lobby",
     async (request: FastifyRequest, reply: FastifyReply) => {
@@ -19,6 +21,13 @@ export const registerRoute = (fastify: FastifyInstance) => {
       //TODO: call watcher to register changestream for each game Id
       //addWatchers(lobby.roundTimerGame.gameIds);
       reply.code(200).send();
+    }
+  );
+
+  fastify.get(
+    "/api/lastResult",
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      reply.code(200).send(getLatestResult());
     }
   );
 };
