@@ -9,8 +9,9 @@
   "scripts": {
     "test": "jest --testPathPattern=tests/",
     "test-coverage": "jest --collect-coverage",
-    "start": "ts-node --es-module-specifier-resolution=node --watch ./src ./src/app.ts",
-    "prod": "node --es-module-specifier-resolution=node ./src/app.js",
+    "build": "rimraf lib && tsc",
+    "start": "ts-node --experimental-specifier-resolution=node ./src/app.ts",
+    "prod": "ts-node --experimental-specifier-resolution=node ./src/app.ts",
     "reg": "npm set registry http://npm.lumigame.com",
     "dev": "ts-node --experimental-specifier-resolution=node ./src/app.ts"
   },
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.16.11",
     "@types/jest": "^29.5.3",
+    "@types/mongoose": "^5.9.25",
     "@types/node": "^20.4.5",
     "babel-jest": "^26.6.3",
     "babel-plugin-rewire": "^1.2.0",
@@ -40,7 +42,7 @@
     "jest-micro-auto-stub": "^1.0.9",
     "jest-sonar-reporter": "^2.0.0",
     "nodemon": "^2.0.15",
-    "typescript": "^5.1.6",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
   }
 }
