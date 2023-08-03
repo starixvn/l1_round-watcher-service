@@ -1,57 +1,36 @@
 import { lobbies } from "../models";
 import { addWatcher, removeAll } from "../watchers/watcher-manager";
-import { gameRounds } from "../models";
+import LastResultHandler from "./last-result-handler";
 
-const LastResult: { [key: string]: Object } = {};
+export default class RoundTimerHandler {
+  lastResultHandler: LastResultHandler;
 
-// TODO for resume action, does not need to be here
-const getLastResult = async (gameConfigNames: Array<string>) => {
-  const jobs = gameConfigNames.map(async (gameName) => {
-    const model = gameRounds(gameName);
+  constructor(lastResultHandler: LastResultHandler) {
+    this.lastResultHandler = lastResultHandler;
+  }
 
-    const latestRound = await model.findOne({}, { _id: false, exchangeRateId: false }).sort({ id: -1 }).lean().exec();
+  async initWatcher() {
+    const supportedGames = await this.getSupportedGames();
+    await this.lastResultHandler.getLastResult(supportedGames.filter((game) => game));
 
-    return { [gameName]: { ...latestRound } };
-  });
+    this.clearWatcher();
 
-  const data = await Promise.all(jobs);
+    supportedGames.forEach((game) => addWatcher(game));
+  }
 
-  return data.reduce((acc, obj) => {
-    const key = Object.keys(obj)[0];
-    acc[key] = obj[key];
+  // TODO get timer config, shouldnt be in handler
+  async getSupportedGames() {
+    const lobbySettings = await lobbies.find({}, { roundTimerGame: true, _id: false }).lean().exec();
 
-    return acc;
-  }, {});
-};
+    const games = lobbySettings.flatMap((setting: { roundTimerGame: { games: any } }) => setting.roundTimerGame?.games);
 
-// TODO get timer config, shouldnt be in handler
-const getSupportedGames = async () => {
-  const lobbySettings = await lobbies.find({}, { roundTimerGame: true, _id: false }).lean().exec();
+    return games.flatMap((setting) => setting?.name || "");
+  }
 
-  const games = lobbySettings.flatMap((setting) => setting.roundTimerGame?.games);
+  // TODO why it not belong to watcher manager
+  clearWatcher() {
+    removeAll();
 
-  return games.flatMap((setting) => setting?.name || "");
-};
-
-// TODO why it not belong to watcher manager
-const clearWatcher = () => {
-  removeAll();
-  Object.keys(LastResult).map((key) => delete LastResult[key]);
-};
-
-const initWatcher = async () => {
-  const supportedGames = await getSupportedGames();
-  const latestResult = await getLastResult(supportedGames.filter((game) => game));
-
-  clearWatcher();
-  Object.assign(LastResult, latestResult);
-  supportedGames.forEach((game) => addWatcher(game));
-};
-
-const updateLastResult = (roundResult: { [key: string]: Object }) => {
-  Object.assign(LastResult, roundResult);
-};
-
-const getLatestResult = () => ({ ...LastResult });
-
-export { initWatcher, updateLastResult, getLatestResult };
+    this.lastResultHandler.clear();
+  }
+}

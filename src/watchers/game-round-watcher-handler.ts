@@ -3,7 +3,7 @@ import authenticationHelper from "../helpers/authentication-helper";
 import appConfigs from "../app-configs";
 import { logger } from "sc-common";
 import GameRound from "../models/game-rounds";
-import { updateLastResult } from "../handlers/round-timer-handler";
+import RoundTimerHandler from "../handlers/round-timer-handler";
 
 export const registerRoundEvent = (game: string) => {
   const { notificationApiSettings } = appConfigs;
@@ -16,14 +16,13 @@ export const registerRoundEvent = (game: string) => {
       const newRound = { [game]: { id, result, settlementResult, time } };
 
       // it is a subcriber
-      updateLastResult(newRound);
+      const timerHandler = new RoundTimerHandler();
+      timerHandler.updateLastResult(newRound);
 
       // then it is another subcriber
-      authenticationHelper
-        .post(`${notificationApiSettings.url}/miniCounter`, newRound)
-        .catch((ex: Error) => {
-          logger.logError(ex);
-        });
+      authenticationHelper.post(`${notificationApiSettings.url}/miniCounter`, newRound).catch((ex: Error) => {
+        logger.logError(ex);
+      });
 
       // another subscriber
       // subscriber.onReceived(....)
