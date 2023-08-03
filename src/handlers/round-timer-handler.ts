@@ -4,6 +4,7 @@ import { gameRounds } from "../models";
 
 const LastResult: { [key: string]: Object } = {};
 
+// TODO for resume action, does not need to be here
 const getLastResult = async (gameConfigNames: Array<string>) => {
   const jobs = gameConfigNames.map(async (gameName) => {
     const model = gameRounds(gameName);
@@ -23,6 +24,7 @@ const getLastResult = async (gameConfigNames: Array<string>) => {
   }, {});
 };
 
+// TODO get timer config, shouldnt be in handler
 const getSupportedGames = async () => {
   const lobbySettings = await lobbies.find({}, { roundTimerGame: true, _id: false }).lean().exec();
 
@@ -31,6 +33,7 @@ const getSupportedGames = async () => {
   return games.flatMap((setting) => setting?.name || "");
 };
 
+// TODO why it not belong to watcher manager
 const clearWatcher = () => {
   removeAll();
   Object.keys(LastResult).map((key) => delete LastResult[key]);

@@ -13,13 +13,20 @@ export const registerRoundEvent = (game: string) => {
   changeStream.on(StreamWatcherEvent.CHANGE, (change) => {
     if (change.operationType === OperationType.INSERT) {
       const { id, result, settlementResult, time } = change?.fullDocument;
-
       const newRound = { [game]: { id, result, settlementResult, time } };
 
+      // it is a subcriber
       updateLastResult(newRound);
-      authenticationHelper.post(`${notificationApiSettings.url}/miniCounter`, newRound).catch((ex: Error) => {
-        logger.logError(ex);
-      });
+
+      // then it is another subcriber
+      authenticationHelper
+        .post(`${notificationApiSettings.url}/miniCounter`, newRound)
+        .catch((ex: Error) => {
+          logger.logError(ex);
+        });
+
+      // another subscriber
+      // subscriber.onReceived(....)
     }
   });
 
