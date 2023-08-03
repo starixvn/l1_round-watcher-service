@@ -1,7 +1,12 @@
 import mongoose from "mongoose";
 
+const GameSchema = new mongoose.Schema({
+  id: Number,
+  name: String,
+});
+
 const RoundTimerSchema = new mongoose.Schema({
-  gameIds: { type: [Number] },
+  games: { type: [GameSchema] },
 });
 
 const Schema = new mongoose.Schema({

@@ -26,14 +26,9 @@ const getLastResult = async (gameConfigNames: Array<string>) => {
 const getSupportedGames = async () => {
   const lobbySettings = await lobbies.find({}, { roundTimerGame: true, _id: false }).lean().exec();
 
-  const gameIds = lobbySettings.flatMap((setting) => setting.roundTimerGame?.gameIds);
+  const games = lobbySettings.flatMap((setting) => setting.roundTimerGame?.games);
 
-  const gameSettings = await gameConfigs
-    .find({ gameId: { $in: gameIds } }, { name: true })
-    .lean()
-    .exec();
-
-  return gameSettings.flatMap((setting) => setting.name);
+  return games.flatMap((setting) => setting?.name || "");
 };
 
 const clearWatcher = () => {
@@ -43,7 +38,7 @@ const clearWatcher = () => {
 
 const initWatcher = async () => {
   const supportedGames = await getSupportedGames();
-  const latestResult = await getLastResult(supportedGames);
+  const latestResult = await getLastResult(supportedGames.filter((game) => game));
 
   clearWatcher();
   Object.assign(LastResult, latestResult);
