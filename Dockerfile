@@ -19,6 +19,6 @@ RUN yarn reg \
     && npx mod-pruner prune --force
 COPY --from=builder /app/lib .
 
-HEALTHCHECK --interval=10s CMD yarn run:healthcheck
+HEALTHCHECK --interval=10s CMD node --es-module-specifier-resolution=node healthcheck.js
 
 CMD [ "node", "--es-module-specifier-resolution=node", "app.js"]
