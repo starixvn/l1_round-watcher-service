@@ -8,11 +8,7 @@ const getLastResult = async (gameConfigNames: Array<string>) => {
   const jobs = gameConfigNames.map(async (gameName) => {
     const model = gameRounds(gameName);
 
-    const latestRound = await model
-      .findOne({}, { _id: false, exchangeRateId: false })
-      .sort({ id: -1 })
-      .lean()
-      .exec();
+    const latestRound = await model.findOne({}, { _id: false, exchangeRateId: false }).sort({ id: -1 }).lean().exec();
 
     return { [gameName]: { ...latestRound } };
   });
@@ -28,14 +24,9 @@ const getLastResult = async (gameConfigNames: Array<string>) => {
 };
 
 const getSupportedGames = async () => {
-  const lobbySettings = await lobbies
-    .find({}, { roundTimerGame: true, _id: false })
-    .lean()
-    .exec();
+  const lobbySettings = await lobbies.find({}, { roundTimerGame: true, _id: false }).lean().exec();
 
-  const gameIds = lobbySettings.flatMap(
-    (setting) => setting.roundTimerGame.gameIds
-  );
+  const gameIds = lobbySettings.flatMap((setting) => setting.roundTimerGame?.gameIds);
 
   const gameSettings = await gameConfigs
     .find({ gameId: { $in: gameIds } }, { name: true })

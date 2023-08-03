@@ -37,16 +37,19 @@ const GameRoundOldSuffixMapper = [
 ];
 
 const OperationType: { [key: string]: string } = {
-  insert: "insert",
+  INSERT: "insert" as const,
+};
+
+const StreamWatcherEvent: { [key: string]: string } = {
+  CHANGE: "change" as const,
+  ERROR: "error" as const,
 };
 
 const RoundCollectionMapper = (gameName: string) => {
   const specialMap = GameRoundSpecialMapper[gameName];
-  const oldSuffix = GameRoundOldSuffixMapper.includes(gameName)
-    ? `${gameName}_phiens`
-    : undefined;
+  const oldSuffix = GameRoundOldSuffixMapper.includes(gameName) ? `${gameName}_phiens` : undefined;
 
   return specialMap ?? oldSuffix ?? `${gameName}_rounds`;
 };
 
-export { RoundCollectionMapper, OperationType };
+export { RoundCollectionMapper, OperationType, StreamWatcherEvent };
