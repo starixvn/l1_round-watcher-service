@@ -1,4 +1,4 @@
-import { gameConfigs, lobbies } from "../models";
+import { lobbies } from "../models";
 import { addWatcher, removeAll } from "../watchers/watcher-manager";
 import { gameRounds } from "../models";
 
@@ -42,7 +42,7 @@ const initWatcher = async () => {
 
   clearWatcher();
   Object.assign(LastResult, latestResult);
-  supportedGames.every((game) => addWatcher(game));
+  supportedGames.forEach((game) => addWatcher(game));
 };
 
 const updateLastResult = (roundResult: { [key: string]: Object }) => {

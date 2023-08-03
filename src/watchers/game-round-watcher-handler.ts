@@ -11,7 +11,7 @@ export const registerRoundEvent = (game: string) => {
   const changeStream = model.watch();
 
   changeStream.on(StreamWatcherEvent.CHANGE, (change) => {
-    if (change.operationType === OperationType.insert) {
+    if (change.operationType === OperationType.INSERT) {
       const { id, result, settlementResult, time } = change?.fullDocument;
 
       const newRound = { [game]: { id, result, settlementResult, time } };
