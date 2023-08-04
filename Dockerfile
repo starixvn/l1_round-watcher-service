@@ -13,7 +13,7 @@ WORKDIR /app
 
 USER node
 ENV PATH /app/node_modules/.bin:$PATH
-COPY package.json yarn.lock .modprunerrc ./
+COPY package.json yarn.lock .modprunerrc healthcheck.js ./
 RUN yarn reg \
     && yarn install --production \
     && npx mod-pruner prune --force
