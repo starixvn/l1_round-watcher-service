@@ -10,24 +10,13 @@ export const registerRoute = (fastify: FastifyInstance) => {
     reply.code(200).send("Hello, I'm Round Watcher Service !!!");
   });
 
-  fastify.post(
-    "/api/lobby",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      const lobby = request.body as Lobby;
-      await authenticationHelper.post(
-        `${notificationApiSettings.url}/lobby`,
-        lobby
-      );
-      //TODO: call watcher to register changestream for each game Id
-      //addWatchers(lobby.roundTimerGame.gameIds);
-      reply.code(200).send();
-    }
-  );
+  fastify.post("/api/lobby", async (request: FastifyRequest, reply: FastifyReply) => {
+    //const lobby = request.body as Lobby;
 
-  fastify.get(
-    "/api/lastResult",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      reply.code(200).send(getLatestResult());
-    }
-  );
+    reply.code(200).send({ received: true });
+  });
+
+  fastify.get("/api/lastResult", async (request: FastifyRequest, reply: FastifyReply) => {
+    reply.code(200).send(getLatestResult());
+  });
 };
