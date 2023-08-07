@@ -1,7 +1,7 @@
 export default {
   enabledLogs: true,
   database: {
-    url: "mongodb://lmn_backend:LmnBackend%40517@10.99.99.187:37301/?replicaSet=SabaL2SIT&appName=gameroundmonitorservice",
+    url: "mongodb://lmn_backend:LmnBackend%40517@10.99.99.187:37301/?replicaSet=SabaL2SIT&appName=roundwatcher",
     options: {
       dbName: "minigame",
       useNewUrlParser: true,
@@ -21,7 +21,7 @@ export default {
   },
   sentry: {
     sentryUrl: "http://8ac47fca6d3e4a41908896a64ef201ac@10.2.190.51:9009/53",
-    logIdentifier: "game-round-monitor-service",
+    logIdentifier: "round-watcher-service",
     env: "SIT",
   },
   metrics: {
