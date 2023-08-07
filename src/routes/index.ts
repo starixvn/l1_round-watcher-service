@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import appConfigs from "../app-configs";
 import authenticationHelper from "../helpers/authentication-helper";
 import Lobby from "../types/lobby";
-import RoundTimerHandler from "../handlers/round-timer-handler";
+import LastResultHandler from "../handlers/last-result-handler";
 
 const { notificationApiSettings } = appConfigs;
 export const registerRoute = (fastify: FastifyInstance) => {
@@ -19,7 +19,8 @@ export const registerRoute = (fastify: FastifyInstance) => {
   });
 
   fastify.get("/api/lastResult", async (request: FastifyRequest, reply: FastifyReply) => {
-    const timerHandler = new RoundTimerHandler();
-    reply.code(200).send(timerHandler.getLatestResult());
+    //TODO must be singleton
+    const timerHandler = new LastResultHandler();
+    reply.code(200).send(timerHandler.get());
   });
 };

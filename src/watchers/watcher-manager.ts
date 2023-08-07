@@ -1,11 +1,12 @@
 import { registerRoundEvent } from "./game-round-watcher-handler";
 import { ChangeStream } from "mongodb";
+import LastResultHandler from "../handlers/last-result-handler";
 
 const watcher: { [key: string]: ChangeStream } = {};
 
-const addWatcher = (game: string) => {
+const addWatcher = (game: string, lastResultHandler: LastResultHandler) => {
   if (!watcher[game]) {
-    const changeStream = registerRoundEvent(game);
+    const changeStream = registerRoundEvent(game, lastResultHandler);
 
     watcher[game] = changeStream;
   }

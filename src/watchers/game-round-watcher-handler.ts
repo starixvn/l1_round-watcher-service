@@ -3,9 +3,9 @@ import authenticationHelper from "../helpers/authentication-helper";
 import appConfigs from "../app-configs";
 import { logger } from "sc-common";
 import GameRound from "../models/game-rounds";
-import RoundTimerHandler from "../handlers/round-timer-handler";
+import LastResultHandler from "../handlers/last-result-handler";
 
-export const registerRoundEvent = (game: string) => {
+export const registerRoundEvent = (game: string, lastResultHandler: LastResultHandler) => {
   const { notificationApiSettings } = appConfigs;
   const model = GameRound(game);
   const changeStream = model.watch();
@@ -16,8 +16,7 @@ export const registerRoundEvent = (game: string) => {
       const newRound = { [game]: { id, result, settlementResult, time } };
 
       // it is a subcriber
-      const timerHandler = new RoundTimerHandler();
-      timerHandler.updateLastResult(newRound);
+      lastResultHandler.update(newRound);
 
       // then it is another subcriber
       authenticationHelper.post(`${notificationApiSettings.url}/miniCounter`, newRound).catch((ex: Error) => {
