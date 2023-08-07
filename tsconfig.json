@@ -19,7 +19,8 @@
     "removeComments": true,
     "extendedDiagnostics": true,
     "exactOptionalPropertyTypes": true,
-    "diagnostics": true
+    "diagnostics": true,
+    "strictPropertyInitialization": false
   },
   "compileOnSave": true,
   "include": ["src/**/*"],

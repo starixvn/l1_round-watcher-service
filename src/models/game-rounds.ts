@@ -1,7 +1,8 @@
+import { Document } from "mongodb";
 import mongoose from "mongoose";
 import { RoundCollectionMapper } from "../constants";
 
-interface GameRound {
+export interface GameRound extends Document {
   id: number;
   result: Object;
   settlementResult: Object;
