@@ -5,7 +5,7 @@ import { logger } from "sc-common";
 import GameRound from "../models/game-rounds";
 import { updateLastResult } from "../handlers/round-timer-handler";
 
-export const registerRoundEvent = (game: string) => {
+export const registerRoundEvent = (gameId: string, game: string) => {
   const { notificationApiSettings } = appConfigs;
   const model = GameRound(game);
   const changeStream = model.watch();
@@ -14,7 +14,7 @@ export const registerRoundEvent = (game: string) => {
     if (change.operationType === OperationType.INSERT) {
       const { id, result, settlementResult, time } = change?.fullDocument;
 
-      const newRound = { [game]: { id, result, settlementResult, time } };
+      const newRound = { [gameId]: { id, result, settlementResult, time } };
 
       updateLastResult(newRound);
       authenticationHelper.post(`${notificationApiSettings.url}/miniCounter`, newRound).catch((ex: Error) => {

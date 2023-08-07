@@ -4,13 +4,13 @@ import { gameRounds } from "../models";
 
 const LastResult: { [key: string]: Object } = {};
 
-const getLastResult = async (gameConfigNames: Array<string>) => {
-  const jobs = gameConfigNames.map(async (gameName) => {
-    const model = gameRounds(gameName);
+const getLastResult = async (gameConfigs: Array<{ id: string; name: string }>) => {
+  const jobs = gameConfigs.map(async (game) => {
+    const model = gameRounds(game.name);
 
     const latestRound = await model.findOne({}, { _id: false, exchangeRateId: false }).sort({ id: -1 }).lean().exec();
 
-    return { [gameName]: { ...latestRound } };
+    return { [game.id]: { ...latestRound } };
   });
 
   const data = await Promise.all(jobs);
@@ -28,7 +28,7 @@ const getSupportedGames = async () => {
 
   const games = lobbySettings.flatMap((setting) => setting.roundTimerGame?.games);
 
-  return games.flatMap((setting) => setting?.name || "");
+  return games;
 };
 
 const clearWatcher = () => {
@@ -38,11 +38,11 @@ const clearWatcher = () => {
 
 const initWatcher = async () => {
   const supportedGames = await getSupportedGames();
-  const latestResult = await getLastResult(supportedGames.filter((game) => game));
+  const latestResult = await getLastResult(supportedGames);
 
   clearWatcher();
   Object.assign(LastResult, latestResult);
-  supportedGames.forEach((game) => addWatcher(game));
+  supportedGames.forEach((game) => addWatcher(game.id, game.name));
 };
 
 const updateLastResult = (roundResult: { [key: string]: Object }) => {

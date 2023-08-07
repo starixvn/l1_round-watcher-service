@@ -3,19 +3,19 @@ import { ChangeStream } from "mongodb";
 
 const watcher: { [key: string]: ChangeStream } = {};
 
-const addWatcher = (game: string) => {
-  if (!watcher[game]) {
-    const changeStream = registerRoundEvent(game);
+const addWatcher = (gameId: string, gameName: string) => {
+  if (!watcher[gameId]) {
+    const changeStream = registerRoundEvent(gameId, gameName);
 
-    watcher[game] = changeStream;
+    watcher[gameId] = changeStream;
   }
 };
 
-const removeWatcher = (game: string) => {
-  watcher[game].removeAllListeners();
-  watcher[game].close();
+const removeWatcher = (gameId: string) => {
+  watcher[gameId].removeAllListeners();
+  watcher[gameId].close();
 
-  delete watcher[game];
+  delete watcher[gameId];
 };
 
 const removeAll = () => {
