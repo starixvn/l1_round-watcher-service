@@ -5,7 +5,8 @@ import { middlewares, logger } from "sc-common";
 import appConfigs from "./app-configs";
 import { registerRoute } from "./routes";
 import authenticationHelper from "./helpers/authentication-helper";
-import { initWatcher } from "./handlers/round-timer-handler";
+import AppBoostrapHandler from "./handlers/app-boostrap-handler";
+import LastResultHandler from "./handlers/last-result-handler";
 
 const fastify = Fastify({
   logger: appConfigs.enabledLogs,
@@ -25,20 +26,19 @@ fastify.register(cors, {
 
 const start = async () => {
   try {
-    const { database, sentry, enabledLogs, notificationApiSettings } =
-      appConfigs;
+    const { database, sentry, enabledLogs, notificationApiSettings } = appConfigs;
     registerRoute(fastify);
     middlewares.database.configureDatabase(mongoose, database);
     enabledLogs && logger.start(sentry);
     authenticationHelper.init(notificationApiSettings.auth);
 
-    await initWatcher();
+    //TODO LastResultHandler must be singleton
+    const appBoostrap = new AppBoostrapHandler(new LastResultHandler());
+    await appBoostrap.initWatcher();
 
     await fastify.listen({ port: 5000, host: "0.0.0.0" });
 
-    console.log(
-      `Service started at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`
-    );
+    console.log(`Service started at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`);
   } catch (err) {
     fastify.log.error(err);
     console.log(err);
