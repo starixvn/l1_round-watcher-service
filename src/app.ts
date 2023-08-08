@@ -1,10 +1,10 @@
-import cors from "@fastify/cors";
 import Fastify from "fastify";
+import cors from "@fastify/cors";
 import mongoose from "mongoose";
-import { logger, middlewares } from "sc-common";
+import { middlewares, logger } from "sc-common";
 import appConfigs from "./app-configs";
 import AppBoostrapHandler from "./handlers/app-boostrap-handler";
-import LastResultHandler from "./handlers/last-result-handler";
+import { ContainerRegistry } from "./container-registry";
 import authenticationHelper from "./helpers/authentication-helper";
 import Router from "./routes";
 
@@ -14,14 +14,14 @@ const fastify = Fastify({
   requestTimeout: 60,
 });
 
+fastify.register(cors, {
+  origin: "*",
+});
+
 fastify.setErrorHandler(async (error, request, reply) => {
   console.log(error);
   logger.logError(error);
   reply.status(500).send({ error: "Something went wrong" });
-});
-
-fastify.register(cors, {
-  origin: "*",
 });
 
 const start = async () => {
@@ -32,9 +32,10 @@ const start = async () => {
     enabledLogs && logger.start(sentry);
     authenticationHelper.init(notificationApiSettings.auth);
 
-    //TODO LastResultHandler must be singleton
-    const appBoostrap = new AppBoostrapHandler(new LastResultHandler());
-    await appBoostrap.initWatcher();
+    const container = new ContainerRegistry().register(appConfigs);
+
+    const monitor = container.resolve<AppBoostrapHandler>("appBoostrapHandler");
+    await monitor.initWatcher();
 
     await fastify.listen({ port: 5000, host: "0.0.0.0" });
 

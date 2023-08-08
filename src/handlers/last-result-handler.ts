@@ -1,4 +1,5 @@
 import { gameRounds } from "../models";
+import { GameRound } from "../models/game-rounds";
 
 export default class LastResultHandler {
   lastResult: { [key: string]: Object } = {};
@@ -22,7 +23,7 @@ export default class LastResultHandler {
     }, {});
   }
 
-  update(roundResult: { [key: string]: Object }) {
+  update(roundResult: { [key: string]: GameRound }) {
     Object.assign(this.lastResult, roundResult);
   }
 

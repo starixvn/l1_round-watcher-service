@@ -15,7 +15,7 @@ export default class WatcherEventHandler {
     watcher.on(WatcherEvent.CLOSE, this.handleCloseEvent);
   }
 
-  async handleNewRoundEvent(newRound: GameRound) {
+  async handleNewRoundEvent(newRound: { [key: string]: GameRound }) {
     try {
       const { notificationApiSettings } = appConfigs;
       // it is a subcriber
