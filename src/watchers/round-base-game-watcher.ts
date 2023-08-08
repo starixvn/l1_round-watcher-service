@@ -1,11 +1,9 @@
+import { Document } from "bson";
 import EventEmitter from "events";
-import { ChangeStream, ChangeStreamDocument, ChangeStreamInsertDocument, ChangeStreamOptions, Document } from "mongodb";
+import { ChangeEvent, ChangeEventCR, ChangeStream, ChangeStreamOptions, MongoError } from "mongodb";
 import { Model } from "mongoose";
 import { logger } from "sc-common";
-import appConfigs from "../app-configs";
-import { OperationType, StreamWatcherEvent } from "../constants";
-import LastResultHandler from "../handlers/last-result-handler";
-import authenticationHelper from "../helpers/authentication-helper";
+import { OperationType } from "../constants";
 import getGameRoundModel, { GameRound } from "../models/game-rounds";
 
 export default class RoundBaseGameWatcher extends EventEmitter {
@@ -26,31 +24,33 @@ export default class RoundBaseGameWatcher extends EventEmitter {
   }
 
   private registerEvents() {
-    this.changeStream.on(ChangeStream.CHANGE, (...args) => this.handleChangeStreamChange(...args));
-    this.changeStream.on(ChangeStream.CLOSE, async () => await this.handleChangeStreamClosed());
-    this.changeStream.on(ChangeStream.ERROR, (error: Error) => this.handleChangeStreamError(error));
+    this.changeStream.on("change", (event) => this.handleChangeStreamChange(event));
+    this.changeStream.on("close", async () => await this.handleChangeStreamClosed());
+    this.changeStream.on("error", (error: MongoError) => this.handleChangeStreamError(error));
   }
 
-  handleChangeStreamChange(data: ChangeStreamDocument<GameRound>) {
+  handleChangeStreamChange(data: ChangeEvent<GameRound>) {
     const { operationType } = data;
     if (operationType === OperationType.INSERT) {
-      const { fullDocument } = data as ChangeStreamInsertDocument<GameRound>;
-      const { id, result, settlementResult, time } = fullDocument;
-      const newRound = { [this.gameName]: { id, result, settlementResult, time } };
-      this.emit(WatcherEvent.NEWROUND, newRound);
+      const { fullDocument } = data as ChangeEventCR<GameRound>;
+      if (fullDocument) {
+        const { id, result, settlementResult, time } = fullDocument;
+        const newRound = { [this.gameName]: { id, result, settlementResult, time } };
+        this.emit(WatcherEvent.NEWROUND, newRound);
+      }
     }
   }
 
-  handleChangeStreamError(error: Error) {
+  handleChangeStreamError(error: MongoError) {
     logger.logError(error);
   }
 
   async handleChangeStreamClosed(): Promise<void> {
-    const { pipeline, options, resumeToken } = this.changeStream;
+    const { resumeToken } = this.changeStream;
     await this.closeChangeStream();
 
     setTimeout(() => {
-      this.initChangeStream(pipeline, { ...options, startAfter: resumeToken });
+      this.initChangeStream([], { startAfter: resumeToken });
     }, 1000);
     this.emit(WatcherEvent.CLOSE, "Change stream is CLOSED");
   }
@@ -66,34 +66,3 @@ export class WatcherEvent {
   static readonly NEWROUND: "newround";
   static readonly ERROR: "error";
 }
-
-export const registerRoundEvent = (game: string, lastResultHandler: LastResultHandler) => {
-  const { notificationApiSettings } = appConfigs;
-  const model = getGameRoundModel(game);
-  const changeStream = model.watch();
-
-  changeStream.on(StreamWatcherEvent.CHANGE, (change) => {
-    if (change.operationType === OperationType.INSERT) {
-      const { id, result, settlementResult, time } = change?.fullDocument;
-      const newRound = { [game]: { id, result, settlementResult, time } };
-
-      // it is a subcriber
-      lastResultHandler.update(newRound);
-
-      // then it is another subcriber
-      authenticationHelper.post(`${notificationApiSettings.url}/miniCounter`, newRound).catch((ex: Error) => {
-        logger.logError(ex);
-      });
-
-      // another subscriber
-      // subscriber.onReceived(....)
-    }
-  });
-
-  changeStream.on(StreamWatcherEvent.ERROR, (err) => {
-    console.error("Change Stream error:", err);
-    logger.logError(err);
-  });
-
-  return changeStream;
-};

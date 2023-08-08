@@ -1,4 +1,4 @@
-import { Document } from "mongodb";
+import { Document } from "bson";
 import mongoose from "mongoose";
 import { RoundCollectionMapper } from "../constants";
 
