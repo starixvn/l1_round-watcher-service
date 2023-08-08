@@ -1,12 +1,12 @@
-import Fastify from "fastify";
 import cors from "@fastify/cors";
+import Fastify from "fastify";
 import mongoose from "mongoose";
-import { middlewares, logger } from "sc-common";
+import { logger, middlewares } from "sc-common";
 import appConfigs from "./app-configs";
-import { registerRoute } from "./routes";
-import authenticationHelper from "./helpers/authentication-helper";
 import AppBoostrapHandler from "./handlers/app-boostrap-handler";
 import LastResultHandler from "./handlers/last-result-handler";
+import authenticationHelper from "./helpers/authentication-helper";
+import Router from "./routes";
 
 const fastify = Fastify({
   logger: appConfigs.enabledLogs,
@@ -27,7 +27,7 @@ fastify.register(cors, {
 const start = async () => {
   try {
     const { database, sentry, enabledLogs, notificationApiSettings } = appConfigs;
-    registerRoute(fastify);
+    new Router(fastify).registerRoute();
     middlewares.database.configureDatabase(mongoose, database);
     enabledLogs && logger.start(sentry);
     authenticationHelper.init(notificationApiSettings.auth);
