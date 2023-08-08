@@ -1,8 +1,6 @@
-import appConfigs from "../app-configs";
 import LastResultHandler from "../handlers/last-result-handler";
-import authenticationHelper from "../helpers/authentication-helper";
-import { GameRound } from "../models/game-rounds";
-import RoundBaseGameWatcher, { WatcherEvent, registerRoundEvent } from "./game-round-watcher-handler";
+import RoundBaseGameWatcher, { registerRoundEvent } from "./round-base-game-watcher";
+import WatcherEventHandler from "./watcher-event-handler";
 
 const watcher: { [key: string]: RoundBaseGameWatcher } = {};
 
@@ -24,41 +22,19 @@ const removeAll = () => {
 };
 
 export default class WatcherManager {
-  private watchers: { [key: string]: RoundBaseGameWatcher } = {};
-  private readonly lastResultHandler: LastResultHandler;
+  private readonly watchers: { [key: string]: RoundBaseGameWatcher } = {};
+  private readonly watcherEventHandler: WatcherEventHandler;
 
-  constructor(lastResultHandler: LastResultHandler) {
-    this.lastResultHandler = lastResultHandler;
+  constructor(watcherEventHandler: WatcherEventHandler) {
+    this.watcherEventHandler = watcherEventHandler;
   }
-
-  attachListeners(game: string) {
-    this.watchers[game].on(WatcherEvent.NEWROUND, async (newRound) => await this.handleNewRoundEvent(newRound));
-    this.watchers[game].on(WatcherEvent.CLOSE, this.handleCloseEvent);
-  }
-
-  async handleNewRoundEvent(newRound: GameRound) {
-    try {
-      const { notificationApiSettings } = appConfigs;
-      // it is a subcriber
-      this.lastResultHandler.update(newRound);
-
-      // then it is another subcriber
-      await authenticationHelper.post(`${notificationApiSettings.url}/miniCounter`, newRound);
-      // another subscriber
-      // subscriber.onReceived(....)
-    } catch (exception) {
-      //TODO: log
-    }
-  }
-
-  handleCloseEvent() {}
 
   addWatcher(game: string) {
     if (!this.watchers[game]) {
       const watcher = new RoundBaseGameWatcher(game);
 
       this.watchers[game] = watcher;
-      this.attachListeners(game);
+      this.watcherEventHandler.attachListeners(watcher);
     }
   }
 
