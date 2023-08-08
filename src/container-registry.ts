@@ -3,6 +3,7 @@ import AppBoostrapHandler from "./handlers/app-boostrap-handler";
 import LastResultHandler from "./handlers/last-result-handler";
 import WatcherEventHandler from "./watchers/watcher-event-handler";
 import WatcherManager from "./watchers/watcher-manager";
+import Router from "./routes";
 
 export class ContainerRegistry {
   container: AwilixContainer;
@@ -13,6 +14,7 @@ export class ContainerRegistry {
 
   register(appConfigs) {
     this.container.register({ appConfigs: asValue(appConfigs) });
+    this.container.register({ routers: asClass(Router) });
 
     this.registerHandlers();
     this.registerWatchers();

@@ -27,14 +27,15 @@ fastify.setErrorHandler(async (error, request, reply) => {
 const start = async () => {
   try {
     const { database, sentry, enabledLogs, notificationApiSettings } = appConfigs;
-    new Router(fastify).registerRoute();
     middlewares.database.configureDatabase(mongoose, database);
     enabledLogs && logger.start(sentry);
     authenticationHelper.init(notificationApiSettings.auth);
 
     const container = new ContainerRegistry().register(appConfigs);
 
+    const router = container.resolve<Router>("routers");
     const monitor = container.resolve<AppBoostrapHandler>("appBoostrapHandler");
+    router.registerRoute(fastify);
     await monitor.initWatcher();
 
     await fastify.listen({ port: 5000, host: "0.0.0.0" });
