@@ -6,14 +6,14 @@ export interface GameRound extends Document {
   id: number;
   result: Object;
   settlementResult: Object;
-  time: string;
+  time: Date;
 }
 
 const Schema = new mongoose.Schema<GameRound>({
   id: { type: Number, required: true },
   result: { type: Object },
   settlementResult: { type: Object },
-  time: { type: String },
+  time: { type: Date },
 });
 
 export default (gameConfigName: string) => mongoose.model<GameRound>(RoundCollectionMapper(gameConfigName), Schema);

@@ -28,6 +28,7 @@ export default class RoundBaseGameWatcher extends EventEmitter {
   private registerEvents() {
     this.changeStream.on(ChangeStream.CHANGE, (...args) => this.handleChangeStreamChange(...args));
     this.changeStream.on(ChangeStream.CLOSE, async () => await this.handleChangeStreamClosed());
+    this.changeStream.on(ChangeStream.ERROR, (error: Error) => this.handleChangeStreamError(error));
   }
 
   handleChangeStreamChange(data: ChangeStreamDocument<GameRound>) {
@@ -38,6 +39,10 @@ export default class RoundBaseGameWatcher extends EventEmitter {
       const newRound = { [this.gameName]: { id, result, settlementResult, time } };
       this.emit(WatcherEvent.NEWROUND, newRound);
     }
+  }
+
+  handleChangeStreamError(error: Error) {
+    logger.logError(error);
   }
 
   async handleChangeStreamClosed(): Promise<void> {
@@ -59,6 +64,7 @@ export default class RoundBaseGameWatcher extends EventEmitter {
 export class WatcherEvent {
   static readonly CLOSE: "close";
   static readonly NEWROUND: "newround";
+  static readonly ERROR: "error";
 }
 
 export const registerRoundEvent = (game: string, lastResultHandler: LastResultHandler) => {
