@@ -1,9 +1,8 @@
 import { asClass, asValue, AwilixContainer, createContainer, InjectionMode } from "awilix";
-import LastResultHandler from "./handlers/last-result-handler";
-import WatcherManager from "./watchers/watcher-manager";
 import AppBoostrapHandler from "./handlers/app-boostrap-handler";
-import RoundBaseGameWatcher from "./watchers/round-base-game-watcher";
+import LastResultHandler from "./handlers/last-result-handler";
 import WatcherEventHandler from "./watchers/watcher-event-handler";
+import WatcherManager from "./watchers/watcher-manager";
 
 export class ContainerRegistry {
   container: AwilixContainer;
@@ -28,7 +27,6 @@ export class ContainerRegistry {
 
   registerWatchers() {
     this.container.register({ watcherManager: asClass(WatcherManager).singleton() });
-    this.container.register({ roundBaseGameWatcher: asClass(RoundBaseGameWatcher).singleton() });
     this.container.register({ watcherEventHandler: asClass(WatcherEventHandler).singleton() });
   }
 }

@@ -1,12 +1,14 @@
 import { lobbies } from "../models";
-import { addWatcher, removeAll } from "../watchers/watcher-manager";
+import WatcherManager from "../watchers/watcher-manager";
 import LastResultHandler from "./last-result-handler";
 
 export default class AppBoostrapHandler {
   private readonly lastResultHandler: LastResultHandler;
+  private readonly watcherManager: WatcherManager;
 
-  constructor(lastResultHandler: LastResultHandler) {
+  constructor(lastResultHandler: LastResultHandler, watcherManager: WatcherManager) {
     this.lastResultHandler = lastResultHandler;
+    this.watcherManager = watcherManager;
   }
 
   public async initWatcher() {
@@ -15,7 +17,7 @@ export default class AppBoostrapHandler {
 
     this.clearWatcher();
 
-    supportedGames.forEach((game) => addWatcher(game, this.lastResultHandler));
+    supportedGames.forEach((game) => this.watcherManager.addWatcher(game));
   }
 
   // TODO move to call admin api for first init
@@ -29,8 +31,7 @@ export default class AppBoostrapHandler {
 
   // TODO why it not belong to watcher manager
   clearWatcher() {
-    removeAll();
-
+    this.watcherManager.removeAllWatchers();
     this.lastResultHandler.clear();
   }
 }
