@@ -22,7 +22,7 @@ export default class WatcherEventHandler {
       this.lastResultHandler.update(newRound);
 
       // then it is another subcriber
-      await authenticationHelper.post(`${notificationApiSettings.url}/miniCounter`, newRound);
+      await authenticationHelper.post(`${notificationApiSettings.url}/roundTimer`, newRound);
       // another subscriber
       // subscriber.onReceived(....)
     } catch (exception) {
