@@ -5,16 +5,17 @@ import { Model } from "mongoose";
 import { logger } from "sc-common";
 import { OperationType } from "../constants";
 import getGameRoundModel, { GameRound } from "../models/game-rounds";
+import { GameConfig } from "../types";
 
 export default class RoundBaseGameWatcher extends EventEmitter {
-  private readonly gameName: string;
+  private readonly gameConfig: GameConfig;
   private readonly model: Model<GameRound>;
   private changeStream: ChangeStream<GameRound>;
 
-  constructor(gameName: string) {
+  constructor(gameConfig: GameConfig) {
     super();
-    this.gameName = gameName;
-    this.model = getGameRoundModel(gameName);
+    this.gameConfig = gameConfig;
+    this.model = getGameRoundModel(gameConfig.name);
     this.initChangeStream();
   }
 
@@ -35,7 +36,7 @@ export default class RoundBaseGameWatcher extends EventEmitter {
       const { fullDocument } = data as ChangeStreamInsertDocument<GameRound>;
       if (fullDocument) {
         const { id, result, settlementResult, time } = fullDocument;
-        const newRound = { [this.gameName]: { id, result, settlementResult, time } };
+        const newRound = { [this.gameConfig.id]: { id, result, settlementResult, time } };
         this.emit(WatcherEvent.NEWROUND, newRound);
       }
     }

@@ -1,3 +1,4 @@
+import { GameConfig } from "../types";
 import RoundBaseGameWatcher from "./round-base-game-watcher";
 import WatcherEventHandler from "./watcher-event-handler";
 
@@ -9,18 +10,18 @@ export default class WatcherManager {
     this.watcherEventHandler = watcherEventHandler;
   }
 
-  addWatcher(game: string) {
-    if (!this.watchers[game]) {
+  addWatcher(game: GameConfig) {
+    if (!this.watchers[game.id]) {
       const watcher = new RoundBaseGameWatcher(game);
 
-      this.watchers[game] = watcher;
+      this.watchers[game.id] = watcher;
       this.watcherEventHandler.attachListeners(watcher);
     }
   }
 
-  async removeWatcher(game: string) {
-    await this.watchers[game].closeChangeStream();
-    delete this.watchers[game];
+  async removeWatcher(gameId: string) {
+    await this.watchers[gameId].closeChangeStream();
+    delete this.watchers[gameId];
   }
 
   async removeAllWatchers() {

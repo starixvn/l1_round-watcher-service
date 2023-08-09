@@ -1,4 +1,5 @@
 import { lobbies } from "../models";
+import { GameConfig } from "../types";
 import WatcherManager from "../watchers/watcher-manager";
 import LastResultHandler from "./last-result-handler";
 
@@ -12,10 +13,10 @@ export default class AppBoostrapHandler {
   }
 
   public async initWatcher() {
-    const supportedGames = await this.getSupportedGames();
-    await this.lastResultHandler.getLastResult(supportedGames.filter((game) => game));
-
     this.clearWatcher();
+
+    const supportedGames = await this.getSupportedGames();
+    await this.lastResultHandler.getLastResult(supportedGames);
 
     supportedGames.forEach((game) => this.watcherManager.addWatcher(game));
   }
@@ -24,9 +25,19 @@ export default class AppBoostrapHandler {
   async getSupportedGames() {
     const lobbySettings = await lobbies.find({}, { roundTimerGame: true, _id: false }).lean().exec();
 
-    const games = lobbySettings.flatMap(setting => setting.roundTimerGame?.games);
+    const games = lobbySettings.flatMap((setting) => setting.roundTimerGame?.games);
 
-    return games.flatMap((setting) => setting?.name || "");
+    const uniqueGames = games.reduce<GameConfig[]>((result, game) => {
+      const isExist = result.find((element) => element.id === game?.id);
+
+      if (game && !isExist) {
+        result.push(game);
+      }
+
+      return result;
+    }, []);
+
+    return uniqueGames;
   }
 
   // TODO why it not belong to watcher manager

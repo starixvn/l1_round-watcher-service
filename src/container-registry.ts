@@ -23,8 +23,8 @@ export class ContainerRegistry {
   }
 
   registerHandlers() {
-    this.container.register({ appBoostrapHandler: asClass(AppBoostrapHandler).singleton() });
     this.container.register({ lastResultHandler: asClass(LastResultHandler).singleton() });
+    this.container.register({ appBoostrapHandler: asClass(AppBoostrapHandler).singleton() });
   }
 
   registerWatchers() {

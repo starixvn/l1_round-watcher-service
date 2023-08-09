@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 const GameSchema = new mongoose.Schema({
-  id: Number,
-  name: String,
+  id: { type: Number, required: true },
+  name: { type: String, required: true },
 });
 
 const RoundTimerSchema = new mongoose.Schema({

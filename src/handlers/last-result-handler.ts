@@ -1,16 +1,17 @@
 import { gameRounds } from "../models";
 import { GameRound } from "../models/game-rounds";
+import { GameConfig } from "../types";
 
 export default class LastResultHandler {
   lastResult: { [key: string]: Object } = {};
 
-  async getLastResult(gameConfigNames: Array<string>) {
-    const jobs = gameConfigNames.map(async (gameName) => {
-      const rounds = gameRounds(gameName);
+  async getLastResult(gameConfigs: Array<GameConfig>) {
+    const jobs = gameConfigs.map(async (game) => {
+      const rounds = gameRounds(game.name);
 
       const latestRound = await rounds.findOne({}, { _id: false, exchangeRateId: false }).sort({ id: -1 }).lean().exec();
 
-      return { [gameName]: { ...latestRound } };
+      return { [game.id]: { ...latestRound } };
     });
 
     const data = await Promise.all(jobs);
