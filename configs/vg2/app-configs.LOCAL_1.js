@@ -4,9 +4,6 @@ export default {
     url: "mongodb://lmn_backend:LmnBackend@10.10.50.12:39201,10.10.50.13:39201,10.10.50.14:39201/?replicaSet=L2pLocal&appName=roundwatcher",
     options: {
       dbName: "minigame",
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      auto_reconnect: true,
     },
   },
   notificationApiSettings: {

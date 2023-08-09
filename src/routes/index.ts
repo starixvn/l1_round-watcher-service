@@ -1,8 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import LastResultHandler from "../handlers/last-result-handler";
-import { async } from "fast-glob";
 import WatcherManager from "../watchers/watcher-manager";
-import { GameConfig, Requests } from "../types";
+import { Requests } from "../types";
 export default class Router {
   private readonly lastResultHandler: LastResultHandler;
   private readonly watcherManager: WatcherManager;
