@@ -21,7 +21,7 @@ export default class LastResultHandler {
       acc[key] = obj[key];
 
       return acc;
-    }, {});
+    }, this.lastResult);
   }
 
   update(roundResult: { [key: string]: GameRound }) {
@@ -30,6 +30,10 @@ export default class LastResultHandler {
 
   get() {
     return { ...this.lastResult };
+  }
+
+  remove(key: string) {
+    delete this.lastResult[key];
   }
 
   clear() {

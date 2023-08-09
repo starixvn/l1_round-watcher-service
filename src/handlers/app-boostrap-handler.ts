@@ -13,8 +13,6 @@ export default class AppBoostrapHandler {
   }
 
   public async initWatcher() {
-    this.clearWatcher();
-
     const supportedGames = await this.getSupportedGames();
     await this.lastResultHandler.getLastResult(supportedGames);
 
@@ -38,11 +36,5 @@ export default class AppBoostrapHandler {
     }, []);
 
     return uniqueGames;
-  }
-
-  // TODO why it not belong to watcher manager
-  clearWatcher() {
-    this.watcherManager.removeAllWatchers();
-    this.lastResultHandler.clear();
   }
 }

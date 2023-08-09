@@ -1,3 +1,4 @@
+import LastResultHandler from "../handlers/last-result-handler";
 import { GameConfig } from "../types";
 import RoundBaseGameWatcher from "./round-base-game-watcher";
 import WatcherEventHandler from "./watcher-event-handler";
@@ -5,9 +6,26 @@ import WatcherEventHandler from "./watcher-event-handler";
 export default class WatcherManager {
   private readonly watchers: { [key: string]: RoundBaseGameWatcher } = {};
   private readonly watcherEventHandler: WatcherEventHandler;
+  private readonly lastResultHandler: LastResultHandler;
 
-  constructor(watcherEventHandler: WatcherEventHandler) {
+  constructor(watcherEventHandler: WatcherEventHandler, lastResultHandler: LastResultHandler) {
     this.watcherEventHandler = watcherEventHandler;
+    this.lastResultHandler = lastResultHandler;
+  }
+
+  async updateWatchers(games: GameConfig[]) {
+    const newGames = games.filter((game) => !this.watchers[game.id]);
+    const removedGames = Object.keys(this.watchers).filter((gameId) => !games.find((game) => game.id === +gameId));
+
+    await this.lastResultHandler.getLastResult(newGames);
+
+    newGames.forEach((game) => {
+      this.addWatcher(game);
+    });
+    removedGames.forEach((gameId) => {
+      this.removeWatcher(gameId);
+      this.lastResultHandler.remove(gameId);
+    });
   }
 
   addWatcher(game: GameConfig) {

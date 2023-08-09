@@ -1,3 +1,4 @@
 import GameConfig from "./game-config";
+import * as Requests from "./requests";
 
-export { GameConfig };
+export { GameConfig, Requests };
