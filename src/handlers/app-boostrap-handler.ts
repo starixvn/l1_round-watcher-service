@@ -24,7 +24,7 @@ export default class AppBoostrapHandler {
   async getSupportedGames() {
     const lobbySettings = await lobbies.find({}, { roundTimerGame: true, _id: false }).lean().exec();
 
-    const games = lobbySettings.flatMap((setting: { roundTimerGame: { games: any } }) => setting.roundTimerGame?.games);
+    const games = lobbySettings.flatMap(setting => setting.roundTimerGame?.games);
 
     return games.flatMap((setting) => setting?.name || "");
   }

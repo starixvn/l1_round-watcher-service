@@ -1,6 +1,6 @@
 import { Document } from "bson";
 import EventEmitter from "events";
-import { ChangeEvent, ChangeEventCR, ChangeStream, ChangeStreamOptions, MongoError } from "mongodb";
+import { ChangeStream, ChangeStreamDocument, ChangeStreamInsertDocument, ChangeStreamOptions } from "mongodb";
 import { Model } from "mongoose";
 import { logger } from "sc-common";
 import { OperationType } from "../constants";
@@ -19,20 +19,20 @@ export default class RoundBaseGameWatcher extends EventEmitter {
   }
 
   private initChangeStream(pipeline: Document[] = [], options: ChangeStreamOptions = {}) {
-    this.changeStream = this.model.watch(pipeline, options) as ChangeStream<GameRound>;
+    this.changeStream = this.model.watch(pipeline, options);
     this.registerEvents();
   }
 
   private registerEvents() {
-    this.changeStream.on("change", (event) => this.handleChangeStreamChange(event));
-    this.changeStream.on("close", async () => await this.handleChangeStreamClosed());
-    this.changeStream.on("error", (error: MongoError) => this.handleChangeStreamError(error));
+    this.changeStream.on(ChangeStream.CHANGE, (event) => this.handleChangeStreamChange(event));
+    this.changeStream.on(ChangeStream.CLOSE, async () => await this.handleChangeStreamClosed());
+    this.changeStream.on(ChangeStream.ERROR, (error: Error) => this.handleChangeStreamError(error));
   }
 
-  handleChangeStreamChange(data: ChangeEvent<GameRound>) {
+  handleChangeStreamChange(data: ChangeStreamDocument<GameRound>) {
     const { operationType } = data;
     if (operationType === OperationType.INSERT) {
-      const { fullDocument } = data as ChangeEventCR<GameRound>;
+      const { fullDocument } = data as ChangeStreamInsertDocument<GameRound>;
       if (fullDocument) {
         const { id, result, settlementResult, time } = fullDocument;
         const newRound = { [this.gameName]: { id, result, settlementResult, time } };
@@ -41,7 +41,7 @@ export default class RoundBaseGameWatcher extends EventEmitter {
     }
   }
 
-  handleChangeStreamError(error: MongoError) {
+  handleChangeStreamError(error: Error) {
     logger.logError(error);
   }
 
