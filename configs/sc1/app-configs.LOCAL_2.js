@@ -16,6 +16,9 @@ export default {
     },
     requestTimeout: 10000,
   },
+  adminApiSettings: {
+    url: "http://l1_admin_api_local_2:5000/api",
+  },
   sentry: {
     sentryUrl: "https://13f39b8359404ed5aec23655e64ccf78@sentry.lumigame.com/2",
     logIdentifier: "round-watcher-service",

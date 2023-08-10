@@ -1,7 +1,9 @@
-import { lobbies } from "../models";
+import axios from "axios";
 import { GameConfig } from "../types";
 import WatcherManager from "../watchers/watcher-manager";
 import LastResultHandler from "./last-result-handler";
+import appConfigs from "../app-configs";
+import authHelper from "../helpers/authentication-helper";
 
 export default class AppBoostrapHandler {
   private readonly lastResultHandler: LastResultHandler;
@@ -19,22 +21,9 @@ export default class AppBoostrapHandler {
     supportedGames.forEach((game) => this.watcherManager.addWatcher(game));
   }
 
-  // TODO move to call admin api for first init
   async getSupportedGames() {
-    const lobbySettings = await lobbies.find({}, { roundTimerGame: true, _id: false }).lean().exec();
+    const games = await authHelper.get(`${appConfigs.adminApiSettings.url}/lobby/getRoundTimerGame`);
 
-    const games = lobbySettings.flatMap((setting) => setting.roundTimerGame?.games);
-
-    const uniqueGames = games.reduce<GameConfig[]>((result, game) => {
-      const isExist = result.find((element) => element.id === game?.id);
-
-      if (game && !isExist) {
-        result.push(game);
-      }
-
-      return result;
-    }, []);
-
-    return uniqueGames;
+    return games as GameConfig[];
   }
 }

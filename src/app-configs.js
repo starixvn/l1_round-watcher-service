@@ -17,6 +17,9 @@ export default {
     },
     requestTimeout: 10000,
   },
+  adminApiSettings: {
+    url: "http://localhost:7778/api",
+  },
   sentry: {
     sentryUrl: "https://13f39b8359404ed5aec23655e64ccf78@sentry.lumigame.com/2",
     logIdentifier: "game-round-monitor-service",

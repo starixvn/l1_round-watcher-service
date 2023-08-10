@@ -13,30 +13,45 @@ const init = async (configs) => {
   await bearerAuthenticator.autoUpdateToken();
 };
 
-const post = async (endpoint, params, options) => {
+const getRequestConfig = () => {
   if (!bearerAuthenticator) {
     logger.logError("authentication-helper has not been initialized properly.");
 
-    return {};
+    return undefined;
   }
 
   const defaultRequestTimeout = 2500;
   const { useAuthenticate, requestTimeout } = authenticationConfigs;
   const requestConfigs = {
-    timeout: options?.requestTimeout || requestTimeout || defaultRequestTimeout,
+    timeout: requestTimeout || defaultRequestTimeout,
     headers: {},
   };
-
-  if (params?.languageCode) {
-    requestConfigs.headers.LanguageCode = params.languageCode;
-    delete params.languageCode;
-  }
 
   if (useAuthenticate) {
     requestConfigs.headers.Authorization = bearerAuthenticator.token;
   }
 
+  return requestConfigs;
+};
+
+const post = async (endpoint, params) => {
+  const requestConfigs = getRequestConfig();
+
+  if (!requestConfigs) {
+    return {};
+  }
+
   return (await Axios.post(endpoint, params, requestConfigs)).data;
 };
 
-export default { init, post };
+const get = async (endpoint) => {
+  const requestConfigs = getRequestConfig();
+
+  if (!requestConfigs) {
+    return {};
+  }
+
+  return (await Axios.get(endpoint, requestConfigs)).data;
+};
+
+export default { init, post, get };

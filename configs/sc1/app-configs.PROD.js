@@ -16,6 +16,9 @@ export default {
     },
     requestTimeout: 10000,
   },
+  adminApiSettings: {
+    url: "http://l1_admin_api_prod:5000/api",
+  },
   sentry: {
     sentryUrl: "http://58fc00e79ab34a3bab04a79038760cb8@10.2.189.50:9009/8",
     logIdentifier: "round-watcher-service",
