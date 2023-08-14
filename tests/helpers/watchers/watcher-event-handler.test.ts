@@ -48,10 +48,10 @@ describe("WatcherEventHandler", () => {
 
       //Act
       await handler.handleNewRoundEvent(newRound);
-      
+
       //Assert
       expect(lastResultHandler.update).toHaveBeenCalledWith(newRound);
-      expect(authenticationHelper.post).toHaveBeenCalledWith(`${appConfigs.notificationApiSettings.url}/miniCounter`, newRound);
+      expect(authenticationHelper.post).toHaveBeenCalledWith(`${appConfigs.notificationApiSettings.url}/roundTimer`, newRound);
     });
   });
 });

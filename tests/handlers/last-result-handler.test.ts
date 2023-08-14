@@ -36,14 +36,17 @@ describe("LastResultHandler", () => {
     });
 
     it("should get the last result for each game config", async () => {
+      // Arrange
       const gameConfigs = [
         { id: "game1", name: "Game 1" },
         { id: "game2", name: "Game 2" },
         { id: "game3", name: "Game 3" },
       ];
 
+      // Act
       await lastResultHandler.getLastResult(gameConfigs);
 
+      // Assert
       expect(gameRounds).toHaveBeenCalledWith(gameConfigs[0].name);
       expect(gameRounds).toHaveBeenCalledWith(gameConfigs[1].name);
       expect(gameRounds).toHaveBeenCalledWith(gameConfigs[2].name);
@@ -60,18 +63,22 @@ describe("LastResultHandler", () => {
     });
 
     it("should log error when an error occurs", async () => {
+      // Arrange
       const gameConfigs = [{ id: "game1", name: "Game 1" }];
       const error = new Error("Something went wrong");
       exec.mockRejectedValueOnce(error);
 
+      // Act
       await lastResultHandler.getLastResult(gameConfigs);
 
+      // Assert
       expect(logger.logError).toHaveBeenCalledWith(error);
     });
   });
 
   describe("update", () => {
     it("should update the last result with the given round result", () => {
+      // Arrange
       lastResultHandler.lastResult = {
         game1: { id: 123 },
         game2: { id: 456 },
@@ -82,8 +89,10 @@ describe("LastResultHandler", () => {
         game3: { id: 987 },
       };
 
+      // Act
       lastResultHandler.update(roundResult);
 
+      // Assert
       expect(lastResultHandler.lastResult).toEqual({
         game1: { id: 789 },
         game2: { id: 456 },
@@ -94,13 +103,16 @@ describe("LastResultHandler", () => {
 
   describe("get", () => {
     it("should return a copy of the last result", () => {
+      // Arrange
       lastResultHandler.lastResult = {
         game1: { id: 123 },
         game2: { id: 456 },
       };
 
+      // Act
       const result = lastResultHandler.get();
 
+      // Assert
       expect(result).toEqual({
         game1: { id: 123 },
         game2: { id: 456 },
@@ -110,13 +122,16 @@ describe("LastResultHandler", () => {
 
   describe("remove", () => {
     it("should remove the last result with the given key", () => {
+      // Arrange
       lastResultHandler.lastResult = {
         game1: { id: 123 },
         game2: { id: 456 },
       };
 
+      // Act
       lastResultHandler.remove("game2");
 
+      // Assert
       expect(lastResultHandler.lastResult).toEqual({
         game1: { id: 123 },
       });
@@ -125,13 +140,16 @@ describe("LastResultHandler", () => {
 
   describe("clear", () => {
     it("should clear the last result", () => {
+      // Arrange
       lastResultHandler.lastResult = {
         game1: { id: 123 },
         game2: { id: 456 },
       };
 
+      // Act
       lastResultHandler.clear();
 
+      // Assert
       expect(lastResultHandler.lastResult).toEqual({});
     });
   });
