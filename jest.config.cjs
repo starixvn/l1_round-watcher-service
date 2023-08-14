@@ -10,9 +10,10 @@ module.exports = async () => {
       "^.+\\.(ts|tsx)?$": ["ts-jest"],
       "^.+\\.js?$": "babel-jest",
     },
+    preset: "ts-jest",
     coverageReporters: ["clover", "lcov", "text-summary", "cobertura", "text"],
     reporters: ["default", ["jest-junit", { outputDirectory: "coverage" }]],
     testResultsProcessor: "jest-sonar-reporter",
-    collectCoverageFrom: ["src/**/*.js"],
+    collectCoverageFrom: ["src/**/*.ts"],
   };
 };
