@@ -20,7 +20,8 @@
     "extendedDiagnostics": true,
     "exactOptionalPropertyTypes": true,
     "diagnostics": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "skipLibCheck": true
   },
   "compileOnSave": true,
   "include": ["src/**/*"],

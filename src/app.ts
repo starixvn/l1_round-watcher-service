@@ -1,12 +1,20 @@
+import appConfigs from "./app-configs";
+import { Trace } from "sc-instrument";
+
 import cors from "@fastify/cors";
 import Fastify from "fastify";
 import { logger } from "sc-common";
-import appConfigs from "./app-configs";
 import { ContainerRegistry } from "./container-registry";
 import AppBoostrapHandler from "./handlers/app-boostrap-handler";
 import authenticationHelper from "./helpers/authentication-helper";
 import Router from "./routes";
 import { configureDatabase } from "./helpers/configure-db";
+
+if (appConfigs.otel?.enabled) {
+  Trace.initSpanProcessor(appConfigs.otel.endpoint);
+  Trace.addIdentifiers("Round Watcher", appConfigs.sentry.env);
+  Trace.default.start();
+}
 
 const fastify = Fastify({
   logger: appConfigs.enabledLogs,
