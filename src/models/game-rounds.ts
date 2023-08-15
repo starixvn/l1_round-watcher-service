@@ -1,6 +1,6 @@
 import { Document } from "bson";
 import mongoose from "mongoose";
-import { RoundCollectionMapper } from "../constants";
+import { getRoundCollection } from "../constants";
 
 export interface GameRound extends Document {
   id: number;
@@ -16,4 +16,4 @@ const Schema = new mongoose.Schema<GameRound>({
   time: { type: Date },
 });
 
-export default (gameConfigName: string) => mongoose.model<GameRound>(RoundCollectionMapper(gameConfigName), Schema);
+export default (gameConfigName: string) => mongoose.model<GameRound>(getRoundCollection(gameConfigName), Schema);

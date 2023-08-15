@@ -40,11 +40,11 @@ const OperationType: { [key: string]: string } = {
   INSERT: "insert" as const,
 };
 
-const RoundCollectionMapper = (gameName: string) => {
+const getRoundCollection = (gameName: string) => {
   const specialMap = GameRoundSpecialMapper[gameName];
   const oldSuffix = GameRoundOldSuffixMapper.includes(gameName) ? `${gameName}_phiens` : undefined;
 
   return specialMap ?? oldSuffix ?? `${gameName}_rounds`;
 };
 
-export { RoundCollectionMapper, OperationType };
+export { getRoundCollection, OperationType };
