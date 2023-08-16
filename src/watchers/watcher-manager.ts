@@ -1,7 +1,7 @@
 import LastResultHandler from "../handlers/last-result-handler";
+import WatcherEventHandler from "../handlers/watcher-event-handler";
 import { GameConfig } from "../types";
 import RoundBaseGameWatcher from "./round-base-game-watcher";
-import WatcherEventHandler from "./watcher-event-handler";
 
 export default class WatcherManager {
   private readonly watchers: { [key: string]: RoundBaseGameWatcher } = {};

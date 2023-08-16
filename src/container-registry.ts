@@ -1,9 +1,9 @@
 import { asClass, asValue, AwilixContainer, createContainer, InjectionMode } from "awilix";
 import AppBoostrapHandler from "./handlers/app-boostrap-handler";
 import LastResultHandler from "./handlers/last-result-handler";
-import WatcherEventHandler from "./watchers/watcher-event-handler";
-import WatcherManager from "./watchers/watcher-manager";
+import WatcherEventHandler from "./handlers/watcher-event-handler";
 import Router from "./routes";
+import WatcherManager from "./watchers/watcher-manager";
 
 export class ContainerRegistry {
   container: AwilixContainer;

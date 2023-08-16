@@ -1,8 +1,8 @@
-import appConfigs from "../../../src/app-configs";
-import LastResultHandler from "../../../src/handlers/last-result-handler";
-import authenticationHelper from "../../../src/helpers/authentication-helper";
-import RoundBaseGameWatcher, { WatcherEvent } from "../../../src/watchers/round-base-game-watcher";
-import WatcherEventHandler from "../../../src/watchers/watcher-event-handler";
+import appConfigs from "../../src/app-configs";
+import LastResultHandler from "../../src/handlers/last-result-handler";
+import WatcherEventHandler from "../../src/handlers/watcher-event-handler";
+import authenticationHelper from "../../src/helpers/authentication-helper";
+import RoundBaseGameWatcher, { WatcherEvent } from "../../src/watchers/round-base-game-watcher";
 jest.mock("../../../src/watchers/round-base-game-watcher");
 jest.mock("../../../src/handlers/last-result-handler");
 jest.mock("../../../src/helpers/authentication-helper");

@@ -26,7 +26,7 @@ export default class RoundBaseGameWatcher extends EventEmitter {
 
   private registerEvents() {
     this.changeStream.on(ChangeStream.CHANGE, (event) => this.handleChangeStreamChange(event));
-    this.changeStream.on(ChangeStream.CLOSE, async () => await this.handleChangeStreamClosed());
+    this.changeStream.on(ChangeStream.CLOSE, () => this.handleChangeStreamClosed());
     this.changeStream.on(ChangeStream.ERROR, (error: Error) => this.handleChangeStreamError(error));
   }
 
@@ -44,9 +44,8 @@ export default class RoundBaseGameWatcher extends EventEmitter {
     logger.logError(error);
   }
 
-  async handleChangeStreamClosed(): Promise<void> {
+  handleChangeStreamClosed() {
     const { resumeToken } = this.changeStream;
-    await this.closeChangeStream();
 
     setTimeout(() => {
       this.initChangeStream([], { startAfter: resumeToken });

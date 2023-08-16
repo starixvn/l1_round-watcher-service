@@ -1,8 +1,8 @@
 import appConfigs from "../app-configs";
-import LastResultHandler from "../handlers/last-result-handler";
 import authenticationHelper from "../helpers/authentication-helper";
 import { GameRound } from "../models/game-rounds";
-import RoundBaseGameWatcher, { WatcherEvent } from "./round-base-game-watcher";
+import RoundBaseGameWatcher, { WatcherEvent } from "../watchers/round-base-game-watcher";
+import LastResultHandler from "./last-result-handler";
 
 export default class WatcherEventHandler {
   private readonly lastResultHandler: LastResultHandler;
@@ -20,9 +20,9 @@ export default class WatcherEventHandler {
 
   async handleNewRoundEvent(newRound: { [key: string]: GameRound }) {
     const { notificationApiSettings } = appConfigs;
-    
+
     this.lastResultHandler.update(newRound);
-      await authenticationHelper.post(`${notificationApiSettings.url}/roundTimer`, newRound);
+    await authenticationHelper.post(`${notificationApiSettings.url}/roundTimer`, newRound);
   }
 
   handleCloseEvent() {}
