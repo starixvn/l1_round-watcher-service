@@ -1,14 +1,13 @@
-import { asClass, asValue } from "awilix";
+import { ContainerRegistry } from "../src/container-registry";
 import AppBoostrapHandler from "../src/handlers/app-boostrap-handler";
 import LastResultHandler from "../src/handlers/last-result-handler";
-import WatcherEventHandler from "../src/watchers/watcher-event-handler";
-import WatcherManager from "../src/watchers/watcher-manager";
+import WatcherEventHandler from "../src/handlers/watcher-event-handler";
 import Router from "../src/routes";
-import { ContainerRegistry } from "../src/container-registry";
+import WatcherManager from "../src/watchers/watcher-manager";
 
 jest.mock("../src/handlers/app-boostrap-handler");
 jest.mock("../src/handlers/last-result-handler");
-jest.mock("../src/watchers/watcher-event-handler");
+jest.mock("../src/handlers/watcher-event-handler");
 jest.mock("../src/watchers/watcher-manager");
 jest.mock("../src/routes");
 

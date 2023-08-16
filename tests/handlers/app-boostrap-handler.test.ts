@@ -1,15 +1,15 @@
+import appConfigs from "../../src/app-configs";
 import AppBoostrapHandler from "../../src/handlers/app-boostrap-handler";
 import LastResultHandler from "../../src/handlers/last-result-handler";
-import WatcherManager from "../../src/watchers/watcher-manager";
-import WatcherEventHandler from "../../src/watchers/watcher-event-handler";
+import WatcherEventHandler from "../../src/handlers/watcher-event-handler";
 import authHelper from "../../src/helpers/authentication-helper";
 import { GameConfig } from "../../src/types";
-import appConfigs from "../../src/app-configs";
+import WatcherManager from "../../src/watchers/watcher-manager";
 
 jest.mock("../../src/handlers/last-result-handler");
 jest.mock("../../src/watchers/watcher-manager");
 jest.mock("../../src/helpers/authentication-helper");
-jest.mock("../../src/watchers/watcher-event-handler");
+jest.mock("../../src/handlers/watcher-event-handler");
 
 describe("AppBoostrapHandler", () => {
   let lastResultHandler: LastResultHandler;
