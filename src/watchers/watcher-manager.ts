@@ -43,6 +43,6 @@ export default class WatcherManager {
   }
 
   async removeAllWatchers() {
-    await Promise.all(Object.keys(this.watchers).map((key) => this.removeWatcher[key]));
+    await Promise.all(Object.keys(this.watchers).map((key) => this.removeWatcher(key)));
   }
 }

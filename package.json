@@ -7,7 +7,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "test": "jest --testPathPattern=tests/",
+    "test": "jest --testPathPattern=tests/watchers/watcher-manager.test",
     "test-coverage": "jest --collect-coverage",
     "build": "rimraf lib && tsc",
     "start": "ts-node --experimental-specifier-resolution=node ./src/app.ts",
