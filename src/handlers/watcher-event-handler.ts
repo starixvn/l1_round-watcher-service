@@ -10,12 +10,10 @@ export default class WatcherEventHandler {
     this.lastResultHandler = lastResultHandler;
 
     this.handleNewRoundEvent = this.handleNewRoundEvent.bind(this);
-    this.handleCloseEvent = this.handleCloseEvent.bind(this);
   }
 
   attachListeners(watcher: RoundBaseGameWatcher) {
     watcher.on(WatcherEvent.NEWROUND, this.handleNewRoundEvent);
-    watcher.on(WatcherEvent.CLOSE, this.handleCloseEvent);
   }
 
   async handleNewRoundEvent(newRound: { [key: string]: GameRound }) {
@@ -25,5 +23,4 @@ export default class WatcherEventHandler {
     await authenticationHelper.post(`${notificationApiSettings.url}/roundTimer`, newRound);
   }
 
-  handleCloseEvent() {}
 }

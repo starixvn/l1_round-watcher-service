@@ -28,7 +28,6 @@ describe("WatcherEventHandler", () => {
       handler.attachListeners(watcher);
 
       //Assert
-      expect(watcher.on).toHaveBeenCalledWith(WatcherEvent.CLOSE, handler.handleCloseEvent);
       expect(watcher.on).toHaveBeenCalledWith(WatcherEvent.NEWROUND, handler.handleNewRoundEvent);
     });
   });

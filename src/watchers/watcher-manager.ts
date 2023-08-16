@@ -19,13 +19,14 @@ export default class WatcherManager {
 
     await this.lastResultHandler.getLastResult(newGames);
 
-    newGames.forEach((game) => {
-      this.addWatcher(game);
-    });
-    removedGames.forEach((gameId) => {
-      this.removeWatcher(gameId);
-      this.lastResultHandler.remove(gameId);
-    });
+    for (const newGame of newGames) {
+      this.addWatcher(newGame);
+    }
+
+    for (const removedGame of removedGames) {
+      this.removeWatcher(removedGame);
+      this.lastResultHandler.remove(removedGame);
+    }
   }
 
   addWatcher(game: GameConfig) {

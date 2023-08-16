@@ -111,4 +111,23 @@ describe("WatcherManager", () => {
       expect(watcherManager.watchers).toEqual({});
     });
   });
+
+  describe("updateWatchers", () => {
+    it("should add & remove games changestream", async () => {
+      //Arrange
+      const watcherManager = initWatcherManager();
+      const watcher = new RoundBaseGameWatcher(gameConfig);
+      // @ts-expect-error
+      watcherManager.watchers[gameConfig.id] = watcher;
+
+      //Act
+      await watcherManager.updateWatchers([{ id: 3, name: "txtu" }]);
+
+      //Assert
+      // @ts-expect-error
+      expect(watcherManager.watchers[gameConfig.id]).toBeUndefined();
+      // @ts-expect-error
+      expect(watcherManager.watchers[3]).toBeDefined();
+    });
+  });
 });

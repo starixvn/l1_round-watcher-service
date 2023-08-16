@@ -1,10 +1,14 @@
 import { Binary } from "bson";
 import EventEmitter from "events";
 import { ObjectId } from "mongodb";
+import { logger } from "sc-common";
 import { GameConfig } from "../../src/types";
 import RoundBaseGameWatcher, { WatcherEvent } from "../../src/watchers/round-base-game-watcher";
 
 const mockChangeStream = new EventEmitter();
+// @ts-expect-error
+mockChangeStream.close = jest.fn();
+
 const onEvent = jest.spyOn(mockChangeStream, "on");
 
 jest.mock("../../src/models/game-rounds", () =>
@@ -12,6 +16,11 @@ jest.mock("../../src/models/game-rounds", () =>
     watch: jest.fn(() => mockChangeStream),
   }))
 );
+jest.mock("sc-common", () => ({
+  logger: {
+    logError: jest.fn(),
+  },
+}));
 
 const gameConfig: GameConfig = {
   id: 2,
@@ -40,7 +49,7 @@ describe("RoundBaseGameWatcher", () => {
         //Arrange
         const watcher = initWatcher();
         const emitEvent = jest.spyOn(watcher, "emit");
-        
+
         //Act
         watcher.handleChangeStreamChange({ operationType: "modify", _id: "123", collectionUUID: new Binary("1") });
 
@@ -54,7 +63,7 @@ describe("RoundBaseGameWatcher", () => {
         //Arrange
         const watcher = initWatcher();
         const emitEvent = jest.spyOn(watcher, "emit");
-        
+
         const newRound = {
           id: 100,
           time: new Date(),
@@ -69,7 +78,7 @@ describe("RoundBaseGameWatcher", () => {
             white4: false,
           },
         };
-        
+
         //Act
         watcher.handleChangeStreamChange({
           operationType: "insert",
@@ -83,6 +92,45 @@ describe("RoundBaseGameWatcher", () => {
         //Assert
         expect(emitEvent).toBeCalledWith(WatcherEvent.NEWROUND, { [gameConfig.id]: newRound });
       });
+    });
+  });
+
+  describe("handleChangeStreamError", () => {
+    it("should call logger.logError", () => {
+      //Arrange
+      const watcher = initWatcher();
+      const error = new Error();
+      //Act
+      watcher.handleChangeStreamError(error);
+
+      //Assert
+      expect(logger.logError).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe("closeChangeStream", () => {
+    it("should remove all listeners", async () => {
+      //Arrange
+      const watcher = initWatcher();
+      const emitEvent = jest.spyOn(mockChangeStream, "removeAllListeners");
+      //Act
+      await watcher.closeChangeStream();
+
+      //Assert
+      expect(emitEvent).toHaveBeenCalled();
+    });
+  });
+
+  describe("handleChangeStreamClosed", () => {
+    it("should call emit", () => {
+      //Arrange
+      const watcher = initWatcher();
+      const emitEvent = jest.spyOn(watcher, "emit");
+      //Act
+      watcher.handleChangeStreamClosed();
+
+      //Assert
+      expect(emitEvent).toHaveBeenCalledWith(WatcherEvent.CLOSE, "Change stream is CLOSED");
     });
   });
 });
