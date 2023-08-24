@@ -20,7 +20,7 @@ export default class WatcherEventHandler {
     const { notificationApiSettings } = appConfigs;
 
     this.lastResultHandler.update(newRound);
+    console.log(newRound);
     await authenticationHelper.post(`${notificationApiSettings.url}/roundTimer`, newRound);
   }
-
 }
