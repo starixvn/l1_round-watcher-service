@@ -27,8 +27,8 @@ fastify.setErrorHandler(async (error, request, reply) => {
 const start = async () => {
   try {
     const { database, sentry, enabledLogs, notificationApiSettings } = appConfigs;
-    configureDatabase(database);
     enabledLogs && logger.start(sentry);
+    configureDatabase(database);
     await authenticationHelper.init(notificationApiSettings.auth);
 
     const container = new ContainerRegistry().register(appConfigs);
