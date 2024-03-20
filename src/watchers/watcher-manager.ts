@@ -1,4 +1,6 @@
 import LastResultHandler from "../handlers/last-result-handler";
+import PingPongHandler from "../handlers/pingpong-handler";
+import StreakHandler from "../handlers/streak-handler";
 import WatcherEventHandler from "../handlers/watcher-event-handler";
 import { GameConfig } from "../types";
 import RoundBaseGameWatcher from "./round-base-game-watcher";
@@ -32,9 +34,13 @@ export default class WatcherManager {
   addWatcher(game: GameConfig) {
     if (!this.watchers[game.id]) {
       const watcher = new RoundBaseGameWatcher(game);
+      const streakHandler = new StreakHandler();
+      const pingpongHandler = new PingPongHandler();
 
       this.watchers[game.id] = watcher;
       this.watcherEventHandler.attachListeners(watcher);
+      this.watcherEventHandler.attachHandler(streakHandler);
+      this.watcherEventHandler.attachHandler(pingpongHandler);
     }
   }
 

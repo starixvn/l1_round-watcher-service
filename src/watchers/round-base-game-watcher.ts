@@ -14,6 +14,7 @@ export default class RoundBaseGameWatcher extends EventEmitter {
 
   constructor(gameConfig: GameConfig) {
     super();
+
     this.gameConfig = gameConfig;
     this.model = getGameRoundModel(gameConfig.name);
     this.initChangeStream();

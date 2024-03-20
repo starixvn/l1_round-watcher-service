@@ -4,6 +4,7 @@ import LastResultHandler from "./handlers/last-result-handler";
 import WatcherEventHandler from "./handlers/watcher-event-handler";
 import Router from "./routes";
 import WatcherManager from "./watchers/watcher-manager";
+import StreakHandler from "./handlers/streak-handler";
 
 export class ContainerRegistry {
   container: AwilixContainer;
@@ -25,6 +26,7 @@ export class ContainerRegistry {
   registerHandlers() {
     this.container.register({ lastResultHandler: asClass(LastResultHandler).singleton() });
     this.container.register({ appBoostrapHandler: asClass(AppBoostrapHandler).singleton() });
+    this.container.register({ streakHandler: asClass(StreakHandler) });
   }
 
   registerWatchers() {

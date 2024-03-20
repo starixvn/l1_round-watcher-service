@@ -14,10 +14,15 @@ export default class AppBoostrapHandler {
   }
 
   public async initWatcher() {
-    const supportedGames = await this.getSupportedGames();
-    await this.lastResultHandler.getLastResult(supportedGames);
+    // const supportedGames = await this.getSupportedGames();
+    // await this.lastResultHandler.getLastResult(supportedGames);
+
+    //TODO configuration of supportedGames
+    const sedie: GameConfig = { id: 2, name: "xocxoc" };
+    const supportedGames = [sedie];
 
     supportedGames.forEach((game) => this.watcherManager.addWatcher(game));
+    //
   }
 
   async getSupportedGames() {
