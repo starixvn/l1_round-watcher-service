@@ -10,10 +10,10 @@
     "test": "jest --testPathPattern=tests/",
     "test-coverage": "jest --collect-coverage",
     "build": "rimraf lib && tsc",
-    "start": "ts-node --experimental-specifier-resolution=node ./src/app.ts",
-    "prod": "ts-node --experimental-specifier-resolution=node ./src/app.ts",
+    "start": "node --loader ts-node/esm ./src/app.ts",
+    "prod": "node --loader ts-node/esm ./src/app.ts",
     "reg": "npm set registry http://npm.lumigame.com",
-    "dev": "ts-node --experimental-specifier-resolution=node ./src/app.ts"
+    "dev": "node --loader ts-node/esm ./src/app.ts"
   },
   "jestSonar": {
     "reportPath": "reports",
