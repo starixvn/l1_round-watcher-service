@@ -13,6 +13,15 @@ export default class PingPongHandler implements ResultHandler {
       }
 
       const result = round.settlementResult[choice] ? 1 : 0;
+      const length = this.pingpong[choice].length;
+
+      if (length > 0) {
+        const lastResult = this.pingpong[choice][length - 1];
+        if (lastResult === result) {
+          this.pingpong[choice] = [];
+        }
+      }
+
       this.pingpong[choice].push(result);
     });
 
