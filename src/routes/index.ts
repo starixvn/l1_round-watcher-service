@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import LastResultHandler from "../handlers/last-result-handler";
 import WatcherManager from "../watchers/watcher-manager";
 import { Requests } from "../types";
+import { PatternRequest } from "../types/requests";
 export default class Router {
   private readonly lastResultHandler: LastResultHandler;
   private readonly watcherManager: WatcherManager;
@@ -25,6 +26,13 @@ export default class Router {
       await this.watcherManager.updateWatchers(games);
 
       reply.code(200).send({ received: true });
+    });
+
+    fastify.get("/api/goodroad/:gameId/:pattern", async (request: FastifyRequest<{ Params: Requests.PatternRequest }>, reply) => {
+      const { gameId, pattern } = request.params;
+      const response = { gameId, pattern: await this.watcherManager.getGoodRoad(gameId, pattern) };
+
+      reply.code(200).send({ status: "OK", received: response });
     });
   }
 }

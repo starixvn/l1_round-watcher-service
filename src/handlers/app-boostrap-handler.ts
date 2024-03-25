@@ -18,11 +18,14 @@ export default class AppBoostrapHandler {
     // await this.lastResultHandler.getLastResult(supportedGames);
 
     //TODO configuration of supportedGames
-    const sedie: GameConfig = { id: 2, name: "xocxoc" };
-    const supportedGames = [sedie];
+    // First, add this as settings :)
+    const baccarat: GameConfig = { id: 10, name: "baccarat" };
+    const vipBaccarat: GameConfig = { id: 27, name: "vipbaccarat" };
+    const supportedGames = [baccarat, vipBaccarat];
+
+    //TODO init result handler with 20 rounds - based on longest streak
 
     supportedGames.forEach((game) => this.watcherManager.addWatcher(game));
-    //
   }
 
   async getSupportedGames() {

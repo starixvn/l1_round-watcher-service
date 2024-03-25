@@ -1,18 +1,26 @@
 import { GameRound } from "../models/game-rounds";
-import { ResultHandler } from "./streak-handler";
+import { GoodRoadHandler } from "./streak-handler";
 
-export default class PingPongHandler implements ResultHandler {
+export default class PingPongHandler implements GoodRoadHandler {
+  private pattern = "pingpong";
   private pingpong = {};
 
   constructor() {}
 
+  onHaveGoodRoad(): void {
+    //TODO broadcast message
+    throw new Error("Method not implemented.");
+  }
+
   processResult(round: GameRound) {
-    Object.keys(round.settlementResult).forEach((choice) => {
+    const settlement = round.settlementResult ?? round.result;
+
+    Object.keys(settlement).forEach((choice) => {
       if (!this.pingpong[choice]) {
         this.pingpong[choice] = [];
       }
 
-      const result = round.settlementResult[choice] ? 1 : 0;
+      const result = settlement[choice] ? 1 : 0;
       const length = this.pingpong[choice].length;
 
       if (length > 0) {
@@ -26,5 +34,16 @@ export default class PingPongHandler implements ResultHandler {
     });
 
     console.log(this.pingpong);
+  }
+
+  getPattern() {
+    return {
+      pattern: this.pattern,
+      result: this.pingpong,
+    };
+  }
+
+  isSupported(pattern: string): boolean {
+    return this.pattern === pattern.trim();
   }
 }

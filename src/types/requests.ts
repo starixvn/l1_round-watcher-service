@@ -4,4 +4,9 @@ type LobbyRequestBody = {
   games: Array<GameConfig>;
 };
 
-export { LobbyRequestBody };
+type PatternRequest = {
+  gameId: number;
+  pattern: string;
+};
+
+export { LobbyRequestBody, PatternRequest };

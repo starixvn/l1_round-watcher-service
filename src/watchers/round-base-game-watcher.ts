@@ -33,10 +33,12 @@ export default class RoundBaseGameWatcher extends EventEmitter {
 
   handleChangeStreamChange(data: ChangeStreamDocument<GameRound>) {
     const { operationType } = data;
+
     if (operationType === OperationType.INSERT) {
       const { fullDocument } = data as ChangeStreamInsertDocument<GameRound>;
       const { id, result, settlementResult, time } = fullDocument;
       const newRound = { [this.gameConfig.id]: { id, result, settlementResult, time } };
+
       this.emit(WatcherEvent.NEWROUND, newRound);
     }
   }

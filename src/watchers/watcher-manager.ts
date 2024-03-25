@@ -1,12 +1,13 @@
 import LastResultHandler from "../handlers/last-result-handler";
 import PingPongHandler from "../handlers/pingpong-handler";
-import StreakHandler from "../handlers/streak-handler";
+import StreakHandler, { GoodRoadHandler } from "../handlers/streak-handler";
 import WatcherEventHandler from "../handlers/watcher-event-handler";
 import { GameConfig } from "../types";
 import RoundBaseGameWatcher from "./round-base-game-watcher";
 
 export default class WatcherManager {
   private readonly watchers: { [key: string]: RoundBaseGameWatcher } = {};
+  private readonly goodRoadHandlers: { [key: string]: Array<GoodRoadHandler> } = {};
   private readonly watcherEventHandler: WatcherEventHandler;
   private readonly lastResultHandler: LastResultHandler;
 
@@ -34,11 +35,12 @@ export default class WatcherManager {
   addWatcher(game: GameConfig) {
     if (!this.watchers[game.id]) {
       const watcher = new RoundBaseGameWatcher(game);
-      const streakHandler = new StreakHandler();
-      const pingpongHandler = new PingPongHandler();
-
       this.watchers[game.id] = watcher;
       this.watcherEventHandler.attachListeners(watcher);
+
+      const streakHandler = new StreakHandler();
+      const pingpongHandler = new PingPongHandler();
+      this.goodRoadHandlers[game.id] = [streakHandler, pingpongHandler];
       this.watcherEventHandler.attachHandler(streakHandler);
       this.watcherEventHandler.attachHandler(pingpongHandler);
     }
@@ -51,5 +53,17 @@ export default class WatcherManager {
 
   async removeAllWatchers() {
     await Promise.all(Object.keys(this.watchers).map((key) => this.removeWatcher(key)));
+  }
+
+  async getGoodRoad(gameId: number, pattern: string): Promise<any> {
+    if (this.goodRoadHandlers[gameId]) {
+      const handlers = this.goodRoadHandlers[gameId].filter((handler) => handler.isSupported(pattern));
+
+      if (handlers.length > 0) {
+        return handlers[0].getPattern();
+      }
+    }
+
+    return {};
   }
 }
