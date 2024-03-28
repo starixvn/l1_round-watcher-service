@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import mongooseLong from "mongoose-long";
+import { logger } from "sc-common";
 
 export const configureDatabase = async ({ url = "", options = {} }) => {
   mongooseLong(mongoose);
