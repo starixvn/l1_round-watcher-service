@@ -6,13 +6,19 @@ export default class PingPongHandler implements GoodRoadHandler {
   private pingpong = {};
 
   constructor() {}
+  getGameId(): number {
+    throw new Error("Method not implemented.");
+  }
+  hasGoodRoad(betOpt: string): boolean {
+    throw new Error("Method not implemented.");
+  }
 
-  onHaveGoodRoad(): void {
+  onHaveGoodRoad(goodroad: any): Promise<void> {
     //TODO broadcast message
     throw new Error("Method not implemented.");
   }
 
-  processResult(round: GameRound) {
+  async processResult(round: GameRound) {
     const settlement = round.settlementResult ?? round.result;
 
     Object.keys(settlement).forEach((choice) => {
@@ -33,7 +39,7 @@ export default class PingPongHandler implements GoodRoadHandler {
       this.pingpong[choice].push(result);
     });
 
-    console.log(this.pingpong);
+    // console.log(this.pingpong);
   }
 
   getPattern() {

@@ -1,25 +1,41 @@
 import { GameRound } from "../models/game-rounds";
 
+import appConfigs from "../app-configs";
+import authenticationHelper from "../helpers/authentication-helper";
+
 export interface GoodRoadHandler {
-  processResult(round: GameRound): void;
+  processResult(round: GameRound): Promise<void>;
   getPattern(): any;
   isSupported(pattern: string): boolean;
-  onHaveGoodRoad(): void;
+  onHaveGoodRoad(goodroad: any): Promise<void>;
+  hasGoodRoad(betOpt: string): boolean;
+  getGameId(): number;
 }
 
 export default class StreakHandler implements GoodRoadHandler {
   private readonly minimum = 4;
   private readonly pattern = "streak";
+  private gameId;
   private streaks = {};
 
-  constructor() {}
-
-  onHaveGoodRoad(): void {
-    //TODO broadcast message
-    throw new Error("Method not implemented.");
+  constructor(gameId: number) {
+    this.gameId = gameId;
+    //TODO inject publisher
+  }
+  getGameId(): number {
+    return this.gameId;
   }
 
-  processResult(round: GameRound) {
+  async onHaveGoodRoad(goodroad: any): Promise<void> {
+    console.log(this.streaks);
+
+    const notification = { gameId: this.gameId, pattern: this.pattern, goodroad };
+
+    //TODO broadcast message
+    await authenticationHelper.post(`${appConfigs.notificationApiSettings.url}/goodRoad`, notification);
+  }
+
+  async processResult(round: GameRound) {
     const settlement = round.settlementResult ?? round.result;
 
     Object.keys(settlement).forEach((choice) => {
@@ -32,25 +48,42 @@ export default class StreakHandler implements GoodRoadHandler {
       this.streaks[choice] = 0;
     });
 
-    console.log(this.streaks);
+    const { total, goodroad } = this.getGoodRoad();
+
+    if (total > 0) {
+      await this.onHaveGoodRoad(goodroad);
+    }
+
+    // console.log(`processResult for ${this.gameId}`);
+    // console.log(round);
   }
 
   getPattern() {
-    const goodroad = {};
-    let total = 0;
-
-    Object.keys(this.streaks).forEach((betOpt) => {
-      if (this.streaks[betOpt] >= this.minimum) {
-        goodroad[betOpt] = this.streaks[betOpt];
-        total += 1;
-      }
-    });
+    const { total, goodroad } = this.getGoodRoad();
 
     return {
       pattern: this.pattern,
       total,
       result: goodroad,
     };
+  }
+
+  private getGoodRoad() {
+    const goodroad = {};
+    let total = 0;
+
+    Object.keys(this.streaks).forEach((betOpt) => {
+      if (this.hasGoodRoad(betOpt)) {
+        goodroad[betOpt] = this.streaks[betOpt];
+        total += 1;
+      }
+    });
+
+    return { total, goodroad };
+  }
+
+  hasGoodRoad(betOpt: string): boolean {
+    return this.streaks[betOpt] >= this.minimum;
   }
 
   isSupported(pattern: string): boolean {

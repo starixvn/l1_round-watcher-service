@@ -38,11 +38,11 @@ export default class WatcherManager {
       this.watchers[game.id] = watcher;
       this.watcherEventHandler.attachListeners(watcher);
 
-      const streakHandler = new StreakHandler();
+      const streakHandler = new StreakHandler(game.id);
       const pingpongHandler = new PingPongHandler();
       this.goodRoadHandlers[game.id] = [streakHandler, pingpongHandler];
       this.watcherEventHandler.attachHandler(streakHandler);
-      this.watcherEventHandler.attachHandler(pingpongHandler);
+      // this.watcherEventHandler.attachHandler(pingpongHandler);
     }
   }
 

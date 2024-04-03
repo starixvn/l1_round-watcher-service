@@ -28,11 +28,10 @@ export default class WatcherEventHandler {
     this.lastResultHandler.update(newRound);
 
     const gameResult = Object.values(newRound).shift();
+    const gameId = Object.keys(newRound).shift();
 
-    for (const handler of this.resultHandlers) {
+    for (const handler of this.resultHandlers.filter((handler) => handler.getGameId().toString() === gameId)) {
       handler.processResult(gameResult ?? ({} as GameRound));
     }
-
-    console.log(newRound);
   }
 }
