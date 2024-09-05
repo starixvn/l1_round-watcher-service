@@ -45,12 +45,7 @@ export default class RoundBaseGameWatcher extends EventEmitter {
   }
 
   handleChangeStreamClosed() {
-    const { resumeToken } = this.changeStream;
-
-    setTimeout(() => {
-      this.initChangeStream([], { startAfter: resumeToken });
-    }, 1000);
-    this.emit(WatcherEvent.CLOSE, "Change stream is CLOSED");
+    logger.logWarning(`Change Stream for ${this.gameConfig.name} has been closed!!`);
   }
 
   async closeChangeStream() {
