@@ -19,6 +19,7 @@ jest.mock("../../src/models/game-rounds", () =>
 jest.mock("sc-common", () => ({
   logger: {
     logError: jest.fn(),
+    logWarning: jest.fn(),
   },
 }));
 

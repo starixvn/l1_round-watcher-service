@@ -45,6 +45,7 @@ export default class RoundBaseGameWatcher extends EventEmitter {
   }
 
   handleChangeStreamClosed() {
+    this.emit(WatcherEvent.CLOSE, "Change stream is CLOSED");
     logger.logWarning(`Change Stream for ${this.gameConfig.name} has been closed!!`);
   }
 
