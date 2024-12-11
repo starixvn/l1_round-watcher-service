@@ -7,9 +7,9 @@ export default {
     },
   },
   notificationApiSettings: {
-    url: "http://l2_notification_service_local:5000/api",
+    url: "http://l2-notification-service-local-service:5000/api",
     auth: {
-      url: "http://l2_auth_api_local:5000",
+      url: "http://l2-auth-api-local-service:5000",
       id: "game-services",
       secret: "gameservices@20luminet&",
       useAuthenticate: true,
@@ -17,7 +17,7 @@ export default {
     requestTimeout: 10000,
   },
   adminApiSettings: {
-    url: "http://l2_admin_api_local:5000/api",
+    url: "http://l2-admin-api-local-service:5000/api",
   },
   sentry: {
     sentryUrl: "https://acb36eb835d948d68c1aad9873754d51@sentry.lumigame.com/27",
