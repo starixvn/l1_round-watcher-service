@@ -7,9 +7,9 @@ export default {
     },
   },
   notificationApiSettings: {
-    url: "http://l2_notification_service_local_1:5000/api",
+    url: "http://l2-notification-service-local1-service:5000/api",
     auth: {
-      url: "http://l2_auth_api_local_1:5000",
+      url: "http://l2-auth-api-local1-service:5000",
       id: "game-services",
       secret: "gameservices@20luminet&",
       useAuthenticate: true,
@@ -17,12 +17,12 @@ export default {
     requestTimeout: 10000,
   },
   adminApiSettings: {
-    url: "http://l2_admin_api_local_1:5000/api",
+    url: "http://l2-admin-api-local1-service:5000/api",
   },
   sentry: {
     sentryUrl: "https://acb36eb835d948d68c1aad9873754d51@sentry.lumigame.com/27",
     logIdentifier: "round-watcher-service",
-    env: "LOCAL-1",
+    env: "LOCAL_1",
   },
   metrics: {
     enable: true,
