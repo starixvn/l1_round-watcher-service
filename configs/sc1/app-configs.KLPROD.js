@@ -1,0 +1,31 @@
+export default {
+  enabledLogs: true,
+  database: {
+    url: "mongodb://svc_readonly:%2EX%7D%29K%2CN2i%7EG%3E%5EwL%2BEd%3BR0V%25OA6Nbt%5B%21o@10.146.34.27:27101,10.146.34.26:27102/?replicaSet=SabaMain&appName=roundwatcher",
+    options: {
+      dbName: "minigame",
+    },
+  },
+  notificationApiSettings: {
+    url: "http://l1-notification-service-klprod-service:5000/api",
+    auth: {
+      url: "http://l1-auth-api-klprod-service:5000",
+      id: "game-services",
+      secret: "gameservices@20luminet&",
+      useAuthenticate: true,
+    },
+    requestTimeout: 10000,
+  },
+  adminApiSettings: {
+    url: "http://l1-admin-api-klprod-service:5000/api",
+  },
+  sentry: {
+    sentryUrl: "http://58fc00e79ab34a3bab04a79038760cb8@sentry-scklprod-ovs.ops-klprod.gamora.prod/8",
+    logIdentifier: "round-watcher-service",
+    env: "PROD",
+  },
+  metrics: {
+    enable: true,
+    secretKey: "30d15293-c7de-4c77-9293-b85d6c5bfe1a",
+  },
+};
